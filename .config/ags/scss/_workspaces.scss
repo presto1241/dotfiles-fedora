@@ -1,0 +1,107 @@
+@use "variables" as *;
+
+.monitor-group {
+  margin: $monitor-margin;
+  border: $border-color $border-width solid;
+  border-radius: $monitor-border-radius;
+  transition: all 0.25s;
+
+  button {
+    border-radius: 8px;
+    border: none;
+    margin: 0px;
+    padding: 0px;
+    background-color: transparent;
+  }
+  
+  button:hover image {
+    filter: drop-shadow(0px 0px 4px $hover-color);
+  }
+  
+  button.active image {
+    filter: 
+    drop-shadow(1px 0px 0px $active-color)
+    drop-shadow(-1px 0px 0px $active-color)
+    drop-shadow(0px 1px 0px $active-color)
+    drop-shadow(0px -1px 0px $active-color);
+  }
+  
+  button.minimized {
+    // grayscale() collides with a built-in Sass color function of the same
+    // name (from sass:color) - interpolation forces it through as literal
+    // CSS instead of Sass trying to call its own function with it.
+    filter: #{"grayscale(1)"};
+  }
+  
+  button.minimized:hover {
+    filter: drop-shadow(0px 0px 4px $hover-color);
+  }
+  
+  image {
+    min-width: 20px;
+    margin: 0px;
+    padding: 1px;
+    
+    transition: all 0.25s;
+  }
+  
+  image.monitor-image:last-child {
+    min-width: 38px;
+  }
+
+  .monitor-image {
+    /* min-width: 32px; */
+    background-color: $border-color;
+    border-radius: $monitor-border-radius 0 0 $monitor-border-radius;
+    transition: all 0.25s;
+  }
+  
+  .monitor-image:last-child {
+    border-radius: $widget-border-radius;
+  }
+  
+  // Each group carries its own leading .workspace-seperator child rather than
+  // relying on :last-child/:not(:last-child) to detect neighbors. This bar
+  // renders workspace-groups from two independent <For> loops (regular
+  // workspaces and the minimized tray), and the tray's whole subtree
+  // mounts/unmounts as Hyprland creates/destroys the special workspace on
+  // minimize/restore - so "am I the last sibling" kept flipping mid-transition
+  // and the separator broke. A divider that's simply an unconditional child of
+  // an already-reactively-gated group can't desync from a neighbor that's
+  // appearing or disappearing - it only exists exactly when its own group does.
+  //
+  // padding-right (the "breathing room" before the pill's rounded end) lives
+  // here too, rather than as a flat padding-right on .monitor-group, for the
+  // same reason: it only shows up when this group is actually visible, so an
+  // idle monitor with nothing showing doesn't reserve dead space for it.
+  .workspace-group {
+    padding-left: 0px;
+    padding-right: 0px;
+    margin: 2px 0 2px 0;
+    transition: all 0.25s;
+  }
+  
+  .workspace-group:last-child {
+    padding-right: 4px;
+  }
+  
+  .minimized-tray {
+    padding-right: 4px;
+  }
+  
+  .workspace-seperator {
+    min-width: 2px;
+    margin-top: 8px;
+    margin-bottom: 8px;
+    margin-left: 4px;
+    margin-right: 4px;
+    border-radius: 4px;
+    background-color: $border-color;
+  }
+}
+
+/*
+.monitor-group:has(> :last-child:is()) {
+  padding-right: 0px;
+}
+*/

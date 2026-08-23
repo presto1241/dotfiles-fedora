@@ -1,0 +1,27 @@
+[Default Applications]
+x-scheme-handler/heroic=heroic.desktop
+x-scheme-handler/sidequest=SideQuest.desktop
+x-scheme-handler/discord=vesktop.desktop
+x-scheme-handler/etcher=balenaEtcher.desktop
+x-scheme-handler/oyasumivr=OyasumiVR-handler.desktop
+x-scheme-handler/postman=Postman.desktop
+x-scheme-handler/lmstudio=appimagekit_f522f9fc70ce42f40e6c713631d72ac6-LM-Studio.desktop
+x-scheme-handler/http=zen-browser.desktop
+x-scheme-handler/https=zen-browser.desktop
+x-scheme-handler/chrome=zen-browser.desktop
+text/html=zen-browser.desktop
+application/x-extension-htm=zen-browser.desktop
+application/x-extension-html=zen-browser.desktop
+application/x-extension-shtml=zen-browser.desktop
+application/xhtml+xml=zen-browser.desktop
+application/x-extension-xhtml=zen-browser.desktop
+application/x-extension-xht=zen-browser.desktop
+x-scheme-handler/claude-cli=claude-code-url-handler.desktop
+
+[Added Associations]
+x-scheme-handler/http=zen-browser.desktop;
+x-scheme-handler/https=zen-browser.desktop;
+x-scheme-handler/chrome=zen-browser.desktop;
+x-scheme-handler/postman=Postman.desktop;
+x-scheme-handler/discord=vesktop.desktop;
+x-scheme-handler/claude-cli=claude-code-url-handler.desktop

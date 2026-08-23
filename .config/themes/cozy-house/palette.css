@@ -1,0 +1,129 @@
+/* ══════════════════════════════════════════════════════════════════════════
+ * cozy-house - colour definitions
+ *
+ * This is the single highest-leverage file in the theme. It REDEFINES GTK's
+ * standard named colours, and everything downstream already reads those names:
+ *
+ *   - ~/.config/gtk-4.0/overrides.css   (window translucency)
+ *   - ~/.config/gtk-3.0/overrides.css
+ *   - ~/.config/ags/scss/_variables.scss  ($fg-color/$bg-color/$border-color
+ *     are literally "@theme_fg_color" etc., so the bar follows this too)
+ *
+ * So you do not need to touch any of them to recolour the desktop - redefining
+ * the names here is enough. The generated gtk.css imports this AFTER the base
+ * GTK theme, so these win.
+ *
+ * Keep every value a literal colour. Do not define these in terms of another
+ * @name or a var() - GTK's alpha() cannot resolve a var(), and it fails
+ * silently by dropping the whole declaration rather than erroring.
+ * ══════════════════════════════════════════════════════════════════════════ */
+
+/* Base surfaces */
+@define-color theme_bg_color            #2b2016;
+@define-color theme_base_color          #161616;
+@define-color theme_fg_color            #d8d8d8;
+@define-color theme_text_color          #d8d8d8;
+
+/* Aliases some themes read instead of the theme_* spellings */
+@define-color bg_color                  #2b2016;
+@define-color base_color                #161616;
+@define-color fg_color                  #d8d8d8;
+@define-color text_color                #d8d8d8;
+
+/* Selection / accent. Kept a cool neutral so it reads as grey rather than
+ * introducing a hue the rest of the theme does not have. */
+@define-color theme_selected_bg_color   #5e4834;
+@define-color theme_selected_fg_color   #5e4834;
+@define-color selected_bg_color         #6e7681;
+@define-color selected_fg_color         #ffffff;
+
+/* Chrome */
+@define-color borders                   #5e4834;
+@define-color unfocused_borders         #1f1f1f;
+
+/* Insensitive / backdrop */
+@define-color insensitive_bg_color      #141414;
+@define-color insensitive_fg_color      #6b6b6b;
+@define-color insensitive_base_color    #121212;
+@define-color theme_unfocused_bg_color  #0f0f0f;
+@define-color theme_unfocused_fg_color  #6b6b6b;
+@define-color theme_unfocused_base_color #161616;
+@define-color theme_unfocused_text_color #d8d8d8;
+
+/* Status */
+@define-color warning_color             #d1a252;
+@define-color error_color               #cf5f5f;
+@define-color success_color             #6fa96f;
+
+/* libadwaita's own names. Apps built on libadwaita read these rather than the
+ * theme_* compat aliases above, so both sets have to be covered. */
+@define-color window_bg_color           #0f0f0f;
+@define-color window_fg_color           #d8d8d8;
+@define-color view_bg_color             #161616;
+@define-color view_fg_color             #d8d8d8;
+@define-color headerbar_bg_color        #141414;
+@define-color headerbar_fg_color        #d8d8d8;
+@define-color sidebar_bg_color          #121212;
+@define-color sidebar_fg_color          #d8d8d8;
+@define-color popover_bg_color          #1a1a1a;
+@define-color popover_fg_color          #d8d8d8;
+@define-color dialog_bg_color           #1a1a1a;
+@define-color dialog_fg_color           #d8d8d8;
+@define-color card_bg_color             #161616;
+@define-color card_fg_color             #d8d8d8;
+@define-color accent_bg_color           #6e7681;
+@define-color accent_fg_color           #ffffff;
+@define-color accent_color              #a8b0ba;
+
+/* ── Buttons ──────────────────────────────────────────────────────────────────
+ * GTK has no standard @define-color for button faces - stock themes shade
+ * @theme_bg_color instead - so these are OUR names. Two things read them:
+ *
+ *   - apply.sh -> kdeglobals Colors:Button, and the generated Kvantum theme's
+ *     button.color / button.text.color (which is what Qt actually obeys).
+ *   - gtk-recolor.map, if the GTK theme baked a button colour in as a literal.
+ *
+ * Nothing in stock GTK reads these on its own; a rule in gtk.css has to. */
+@define-color button_bg_color           #1e1e1e;
+@define-color button_fg_color           #d8d8d8;
+@define-color button_hover_bg_color     #262626;
+@define-color button_active_bg_color    #2f2f2f;
+@define-color button_border_color       #2a2a2a;
+
+/* Pressed/darker accent. Themes that bake an accent in usually bake a darker
+ * companion next to it for the pressed and border states. */
+@define-color accent_dark_color         #565d66;
+
+/* ── Terminal (kitty) ─────────────────────────────────────────────────────────
+ * apply.sh generates ~/.config/kitty/current-theme.conf from these, so the
+ * terminal palette lives here with everything else rather than in a second
+ * hand-maintained file.
+ *
+ * ONLY the 16 ANSI colours are here. Background, foreground, cursor, selection
+ * and url fall back to the UI names above (theme_bg_color, theme_fg_color,
+ * theme_selected_bg_color, ...) - see KITTY_BASIC in lib/derive.py. Defining
+ * term_background here as well would just be the same colour written twice,
+ * and the two would drift the first time only one got edited. Add a term_*
+ * name only when the terminal should genuinely differ from the desktop. */
+@define-color term_color0               #1a1a1a;
+@define-color term_color8               #4d4d4d;
+@define-color term_color1               #cf5f5f;
+@define-color term_color9               #e07b7b;
+@define-color term_color2               #6fa96f;
+@define-color term_color10              #8bc48b;
+@define-color term_color3               #d1a252;
+@define-color term_color11              #e3bd7a;
+@define-color term_color4               #6e7681;
+@define-color term_color12              #8b939e;
+@define-color term_color5               #9a7fa8;
+@define-color term_color13              #b79cc4;
+@define-color term_color6               #6f9fa9;
+@define-color term_color14              #8dbcc6;
+@define-color term_color7               #c8c8c8;
+@define-color term_color15              #f0f0f0;
+
+/* A surface below theme_bg_color. Juno uses three near-black shades under its
+ * window background (sunken frames, scrollbar troughs, notebook gutters); with
+ * only bg/base/card to map onto they would all flatten into one and the theme
+ * would lose its depth. */
+@define-color surface_sunken_color      #0b0b0b;

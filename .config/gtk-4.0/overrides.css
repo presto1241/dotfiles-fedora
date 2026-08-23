@@ -1,0 +1,103 @@
+/* ══════════════════════════════════════════════════════════════════════════
+ * HAND-MAINTAINED. The theme switcher never touches this file.
+ *
+ * gtk.css next door is GENERATED - it is rewritten on every theme switch and
+ * does nothing but @import the current theme and then this file. This file is
+ * imported last, so everything here wins over the theme.
+ *
+ * Nothing below names a literal colour except through @theme_bg_color, so it
+ * composes with whatever theme is active instead of fighting it.
+ * ══════════════════════════════════════════════════════════════════════════ */
+
+/* ── Window translucency ───────────────────────────────────────────────────
+ *
+ * The `.background` in every selector is load-bearing, not decoration. This
+ * file loads at GTK_STYLE_PROVIDER_PRIORITY_USER (800), which outranks the
+ * PRIORITY_APPLICATION (600) stylesheet ags injects for its own windows, and
+ * in GTK's cascade provider priority beats selector specificity - so anything
+ * matching here wins outright over the bar's own CSS. Ordinary app toplevels
+ * carry the `.background` class; Astal's layer-shell surfaces (top bar, dock,
+ * desktop widget) do not. Verified: a bare `window` selector repaints the bar
+ * strip red, `window.background` leaves it untouched. Keep `.background` on
+ * every rule below or it will bleed into the panels.
+ *
+ * color-mix() rather than the more familiar alpha(@theme_bg_color, 0.75):
+ * inside a libadwaita app, alpha() silently produces NO background at all and
+ * the window renders fully see-through. libadwaita 1.7 defines the old
+ * @theme_bg_color compat names in terms of CSS custom properties
+ * (var(--window-bg-color)), and alpha() cannot resolve a var(), so the whole
+ * declaration is dropped - with no warning. color-mix() resolves it correctly.
+ * Confirmed by measurement: alpha() -> effective opacity 0.00, color-mix()
+ * tracks the requested value (0.82 requested measured 0.835). (alpha() still
+ * works in ~/.config/ags, where the colour comes from a real @define-color in
+ * the theme stylesheet, and in the GTK3 file, which has no libadwaita and no
+ * color-mix() support.)
+ *
+ * ⇢ This 75% is the opacity knob. The GTK3 file has its own copy.
+ *
+ * Was 82%. Lowered to match Qt and kitty, which both measured 0.772 effective
+ * against the desktop backdrop - GTK at 82% measured 0.835 and read visibly
+ * more opaque than Dolphin sitting next to it. Same number as kitty's
+ * background_opacity now. */
+window.background {
+  background-color: color-mix(in srgb, @theme_bg_color 75%, transparent);
+}
+
+/* Only the window itself is translucent. Everything here paints its own opaque
+ * fill on top of it and has to be cleared for that translucency to show.
+ *
+ * These names come from libadwaita's own stylesheet, not from guesswork:
+ *   gresource extract /usr/lib64/libadwaita-1.so.0 \
+ *     /org/gnome/Adwaita/styles/gtk.css
+ * Two that are easy to get wrong: a split-view sidebar is `.sidebar-pane`
+ * (`.sidebar` alone only covers GtkAssistant), and a header inside an
+ * AdwToolbarView is painted on `.top-bar`, not on `headerbar`. Guessing those
+ * is why a first pass left Nautilus's sidebar and header stubbornly opaque. */
+window.background headerbar,
+window.background .top-bar,
+window.background .bottom-bar,
+window.background .sidebar-pane,
+window.background .content-pane,
+window.background .sidebar,
+window.background .navigation-sidebar,
+window.background stacksidebar,
+window.background placessidebar,
+window.background list,
+window.background listview,
+window.background columnview,
+window.background gridview,
+window.background iconview,
+window.background .view,
+window.background textview,
+window.background textview > text,
+window.background notebook > stack,
+window.background searchbar > revealer > box,
+window.background actionbar > revealer > box,
+window.background tabbar .box {
+  background-color: transparent;
+}
+
+/* Clearing every fill above flattens the window into one uniform pane and
+ * loses the sidebar/content hierarchy. Put it back as a relative tint - black
+ * at low alpha rather than an opaque colour, so it darkens what is behind it
+ * instead of sealing the window back up. */
+window.background .sidebar-pane,
+window.background stacksidebar,
+window.background placessidebar {
+  background-color: rgba(0, 0, 0, 0.22);
+}
+
+window.background headerbar,
+window.background .top-bar {
+  background-color: rgba(0, 0, 0, 0.12);
+}
+
+/* Overlay surfaces stay opaque. They float above content that is already
+ * translucent, and stacking two levels of alpha makes text hard to read. */
+window.background popover > contents,
+window.background popover > arrow,
+window.background tooltip,
+window.background dialog-host > dialog sheet,
+window.background .osd {
+  background-color: @theme_bg_color;
+}

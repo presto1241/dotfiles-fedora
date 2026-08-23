@@ -1,0 +1,77 @@
+@use "variables" as *;
+
+// Same translucent-surface treatment as the bar pills, so Hyprland's blur has
+// something to work with - see the blur-notifications layerrule in
+// ~/.config/hypr/hyprland.conf.
+window.Notifications {
+  background: transparent;
+  color: $fg-color;
+
+  .notification {
+    background: $bg-color;
+    border: $border-color $border-width solid;
+    border-radius: calc($widget-border-radius * 0.5);
+    margin: 8px 8px 0 8px;
+    padding: 8px 8px;
+    min-width: 340px;
+
+    // The accent stripe is the only thing that distinguishes urgency levels,
+    // so it sits on the leading edge where it reads at a glance.
+    //border-left: 1px solid transparent;
+    background-image: none;
+
+    &.critical {
+      background-image: radial-gradient(100% at left, #e055602a, transparent);
+    }
+
+    &.normal {
+      background-image: radial-gradient(100% at left, #8c8c8c5c, transparent);
+    }
+
+    &.low {
+      background-image: none;
+    }
+  }
+
+  .header {
+    font-size: 0.8em;
+    opacity: 0.75;
+
+    .app-name {
+      font-weight: bold;
+    }
+
+    button.close {
+      border-radius: 50%;
+      padding: 2px;
+      min-width: 20px;
+      min-height: 20px;
+    }
+  }
+
+  .content {
+    margin-top: 2px;
+
+    image {
+      border-radius: 8px;
+    }
+
+    .summary {
+      font-weight: bold;
+    }
+
+    .body {
+      opacity: 0.85;
+      margin-top: 2px;
+    }
+  }
+
+  .actions {
+    margin-top: 10px;
+
+    button {
+      border-radius: 8px;
+      padding: 4px 8px;
+    }
+  }
+}

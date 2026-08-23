@@ -1,0 +1,64 @@
+/* ══════════════════════════════════════════════════════════════════════════
+ * HAND-MAINTAINED. The theme switcher never touches this file.
+ *
+ * gtk.css next door is GENERATED - rewritten on every theme switch, and does
+ * nothing but @import the current theme and then this file, which therefore
+ * wins over the theme.
+ *
+ * The GTK3 half of ~/.config/gtk-4.0/overrides.css - kept in sync so an app
+ * looks the same whichever toolkit it happens to use (pulsemeeter ships both
+ * a GTK3 and a GTK4 path, for instance).
+ *
+ * Shorter than the GTK4 side because there is no libadwaita here: GTK3 apps
+ * already follow gtk-theme-name, and there is no AdwToolbarView/.sidebar-pane
+ * indirection to work around. Nothing in ags is GTK3, so the panels are not at
+ * risk from this file - `.background` is kept on each selector only to mirror
+ * the GTK4 side, where it IS the safety mechanism.
+ *
+ * alpha() here, NOT color-mix(): GTK3 has no color-mix(), and alpha() works
+ * correctly in GTK3 because there is no libadwaita defining @theme_bg_color in
+ * terms of a var(). The GTK4 file needs the opposite choice.
+ * ══════════════════════════════════════════════════════════════════════════ */
+
+/* ⇢ This 0.75 is the opacity knob. The GTK4 file has its own copy.
+ * Was 0.82; lowered to match Qt and kitty, both of which measured 0.772
+ * effective opacity against the desktop backdrop. */
+window.background {
+  background-color: alpha(@theme_bg_color, 0.75);
+}
+
+/* Surfaces that paint their own opaque fill over the window background. */
+window.background headerbar,
+window.background .sidebar,
+window.background placessidebar,
+window.background stacksidebar,
+window.background list,
+window.background .view,
+window.background treeview,
+window.background textview,
+window.background textview > text,
+window.background iconview,
+window.background notebook > stack,
+window.background searchbar > revealer > box,
+window.background actionbar > revealer > box {
+  background-color: transparent;
+}
+
+/* Relative tint so the sidebar/content hierarchy survives being cleared. */
+window.background .sidebar,
+window.background placessidebar,
+window.background stacksidebar {
+  background-color: rgba(0, 0, 0, 0.22);
+}
+
+window.background headerbar {
+  background-color: rgba(0, 0, 0, 0.12);
+}
+
+/* Overlays stay opaque - they float over already-translucent content. */
+window.background popover,
+window.background tooltip,
+window.background menu,
+window.background .osd {
+  background-color: @theme_bg_color;
+}

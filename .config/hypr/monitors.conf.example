@@ -1,0 +1,25 @@
+# Machine-specific monitor layout. Copy this file to monitors.conf (which is
+# gitignored) and edit it for the box you're on - hyprland.conf sources
+# monitors.conf unconditionally and will fail to find it otherwise.
+#
+# Find your output names/modes with: hyprctl monitors all
+
+# monitor = DP-1, 3840x2160@60.00, 0x0, 1
+# monitor = DP-3, 1920x1080@74.97, 3840x0, 1
+# monitor = HDMI-A-1, 1920x1080@120.00, 5760x0, 1
+
+# A laptop with just the built-in panel usually only needs:
+# monitor = eDP-1, preferred, auto, 1
+
+# Optional: pick which monitor gets focus at startup.
+# cursor {
+#     default_monitor = HDMI-A-1
+# }
+
+# Optional: pin workspace 11 (the "minimized windows" stash, see
+# keybinds.conf) to a specific monitor.
+# workspace = 11, monitor:HDMI-A-1
+
+# Optional: mark a monitor as XRandR "primary" for XWayland/Proton games
+# that ask X for "the" display instead of asking Hyprland.
+# exec-once = ~/.config/hypr/scripts/xwayland-primary.sh HDMI-A-1

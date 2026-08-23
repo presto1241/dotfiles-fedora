@@ -1,0 +1,40 @@
+# dnf install $(grep -v '^#' packages.dnf.txt)
+
+# Hyprland itself
+hyprland
+hyprland-guiutils
+hyprland-uwsm
+
+# Screen sharing / portals
+xdg-desktop-portal
+xdg-desktop-portal-hyprland
+xdg-desktop-portal-gtk
+
+# App launcher
+rofi
+rofi-themes
+
+# Terminal
+kitty
+
+# Wallpaper daemon (see .config/hypr/scripts/set-wallpaper.sh)
+swww
+
+# GTK/Qt theming
+kvantum
+kvantum-qt5
+qt6ct
+gtk4-layer-shell
+
+# Night light
+gammastep
+
+# Build deps for hyprland-preview-share-picker (see packages.other.md)
+gtk4-layer-shell-devel
+gtk4-devel
+
+# AGS/astal shell runtime (see packages.other.md - the ags binary itself
+# is not packaged and gets built from source)
+golang
+nodejs
+nodejs-npm

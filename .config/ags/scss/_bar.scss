@@ -1,0 +1,165 @@
+@use "variables" as *;
+
+window.Bar {
+  min-height: 22px;
+  margin-top: 4px;
+  margin-left: 8px;
+  margin-right: 8px;
+
+  button {
+    padding: 1px;
+    padding-left: 1px;
+    padding-right: 1px;
+    margin-left: 1px;
+    margin-right: 1px;
+    font-weight: normal;
+
+    // Now that the bar follows the desktop GTK theme, the theme's full button
+    // face comes with it - a gradient in background-image, an outline, and an
+    // inset highlight, none of which background-color alone clears. Strip all
+    // of it so bar buttons read as bare icons instead of a row of chiclets.
+    background-color: transparent;
+    background-image: none;
+    border: none;
+    box-shadow: none;
+  }
+
+  label {
+    padding-left: 4px;
+    padding-right: 4px;
+    color: $text-base-color;
+
+    // GTK centres a label by its *logical* line box (ascent + descent), so the
+    // room reserved for descenders counts even in text that has none. Rounding
+    // the font's metrics to whole pixels then lands the box half a pixel high,
+    // and since the bar's text is almost all digits and caps the result reads
+    // as "the text sits above the icons". One pixel of top padding grows the
+    // box downwards and puts the baseline back on centre - measured against
+    // the weather icon next to it, this lands the cap band exactly on the
+    // pill's centre line. Retune if the bar's font or font size changes.
+    padding-top: 1px;
+  }
+
+  .widget-group {
+    border-width: $border-width;
+    border-color: $border-color;
+    border-style: solid;
+    border-radius: $widget-border-radius;
+
+    background-color: $bg-color;
+  }
+
+  .system-tray {
+    transform: rotate(-180deg);
+    transition: transform 0.25s;
+  }
+
+  .system-tray.active {
+    transform: rotate(0deg);
+  }
+
+  .system-info {
+    padding-left: 2px;
+    padding-right: 2px;
+
+    // The GTK theme's `button` rule reserves a 16px min-width per button
+    // (bigger still for .image-button, see .media-control below), and the
+    // bar's generic `label` rule above adds 4px of padding on both sides of
+    // every label. Neither is overridden by default, so the CPU/GPU buttons
+    // and the bare RAM label all sit further apart than their text needs -
+    // tighten both scoped to this widget only.
+    button {
+      min-width: 0;
+      margin-left: 0;
+      margin-right: 0;
+    }
+
+    label {
+      padding-left: 2px;
+      padding-right: 2px;
+    }
+  }
+
+  .weather {
+    padding-left: 4px;
+    padding-right: 4px;
+  }
+
+  .media-control {
+    // The GTK theme auto-classes any button whose only child is an <image>
+    // (which these are) as .image-button and reserves a 24px min-width for
+    // it - more than the 14px icon actually needs. Nothing was overriding
+    // that, so each button sat centered in an invisible ~24px box; that
+    // phantom padding, not spacing/margin, was the real gap between icons.
+    min-width: 0;
+    padding-left: 0px;
+    padding-right: 0px;
+    margin-left: 2px;
+    margin-right: 2px;
+  }
+
+  .theme-switcher-icon {
+    color: $fg-color;
+  }
+
+  // The theme draws a round 16px handle (the `slider` node) with a -7px
+  // margin so it overhangs the trough - collapsing it to nothing turns this
+  // into a plain click/drag-anywhere bar, with `highlight` (the portion up
+  // to the current value) left as the only value indicator. Clicking still
+  // sets a value even with no handle to grab; whether that click warps
+  // straight to the clicked position is the gtkPrimaryButtonWarpsSlider
+  // line in MonitorBrighness.tsx, not CSS.
+  //
+  // With the handle gone, though, `trough`/`highlight` are all that's left
+  // to look at - and the theme sizes them for a full desktop app (a faint
+  // rgba(255,255,255,0.14) trough, sized via `scale { min-height: 16px;
+  // padding: 8px }` on the outer node), which reads as "nothing there" at
+  // this bar's scale. Given both an explicit height and removed the theme's
+  // padding so it isn't floating in empty space.
+  .brightness-slider {
+    min-height: 0;
+    padding: 0;
+
+    trough,
+    highlight {
+      min-height: 5px;
+      margin: 0;
+      color: $border-color;
+      border-radius: 3px;
+    }
+  }
+
+  .brightness-slider slider {
+    min-width: 0;
+    min-height: 0;
+    margin: 0;
+    padding: 0;
+    background: none;
+    box-shadow: none;
+    border: none;
+  }
+
+  // GtkPopover is a normal child in the widget tree (it just renders through
+  // its own surface), so it's still reachable here - but the theme's own
+  // popover.background > contents rule hardcodes a literal background-color
+  // and border (#0d0f17 / #040407) instead of the named GTK colours
+  // everything else in this file uses, so it never followed palette.css and
+  // looked like a different app. $bg-color/$border-color do follow it.
+  popover {
+    > contents {
+      margin-top: 5px;
+      border-width: $border-width;
+      border-color: $border-color;
+      border-style: solid;
+      border-radius: calc($widget-border-radius * 0.5);
+      box-shadow: none;
+
+      background-color: $bg-color;
+      padding: 2px;
+    }
+
+    > arrow {
+      background-color: $bg-color;
+    }
+  }
+}

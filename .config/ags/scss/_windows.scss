@@ -1,0 +1,28 @@
+@use "variables" as *;
+
+window.AppBar, window.DesktopWidget {
+  background: transparent;
+  color: $fg-color;
+  font-weight: bold;
+
+  > centerbox {
+    background: $bg-color;
+    border-radius: $widget-border-radius;
+    margin: 8px;
+    border: $border-color 1px solid;
+  }
+
+  button {
+    border-radius: 8px;
+    margin: 2px;
+  }
+}
+
+window.DesktopWidget {
+  margin-top: 150px;
+  margin-bottom: 150px;
+}
+
+window.AppBar {
+  transition: all 0.25s;
+}

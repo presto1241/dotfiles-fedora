@@ -1,0 +1,24 @@
+// https://gitlab.gnome.org/GNOME/gtk/-/blob/gtk-3-24/gtk/theme/Adwaita/_colors-public.scss
+$fg-color: #{"@theme_fg_color"};
+
+// Panel surfaces are translucent so Hyprland's blur has something to work with.
+// Blur only reaches a layer-shell surface that BOTH has alpha and is named in a
+// layerrule - see the TRANSPARENCY/BLUR section of ~/.config/hypr/hyprland.conf.
+// Doing it in CSS rather than with a Hyprland `opacity` rule fades only the
+// background and leaves text and icons fully opaque.
+//
+// alpha() is GTK's own CSS function and multiplies a colour's existing alpha,
+// so against an opaque theme background this is a straight opacity. Keeping it
+// wrapped around @theme_bg_color rather than hardcoding an rgba() is what lets
+// the bar keep following the desktop GTK theme.
+$bg-opacity: 0.75;
+$bg-color: #{"alpha(@theme_bg_color, #{$bg-opacity})"};
+$hover-color: #{"@theme_selected_fg_color"};
+$active-color: #{"@theme_selected_bg_color"};
+$border-color: #{"@borders"};
+$border-width: 1px;
+$widget-border-radius: 25px;
+$monitor-margin: 2px;
+$monitor-border-radius: calc($widget-border-radius - $monitor-margin);
+
+$text-base-color: #{"@theme_text_color"};

@@ -1,0 +1,28 @@
+/* dark-gray - GTK rule overrides.
+ *
+ * palette.css next door handles COLOURS. This file is for rules - anything
+ * that needs a selector rather than just a different value. It is imported
+ * LAST in the generated ~/.config/gtk-{3,4}.0/gtk.css, after the base theme,
+ * after palette.css and after overrides.css, so it has the final say.
+ *
+ * Most themes will leave this empty: redefining the names in palette.css is
+ * usually enough, and doing it there keeps the ags bar in sync for free.
+ *
+ * Two rules carried over from the main setup that are worth remembering here:
+ *
+ *   1. Keep `.background` on any `window` selector. Ordinary app toplevels
+ *      carry that class and Astal's layer-shell surfaces do not, so it is what
+ *      stops a rule leaking into the top bar and dock - user CSS outranks the
+ *      stylesheet ags injects for its own windows.
+ *   2. In the GTK4 file use color-mix(), never alpha(), on a named colour.
+ *      Inside libadwaita apps alpha() silently produces no background at all.
+ *      alpha() is correct in the GTK3 file, which has neither problem.
+ */
+
+/* Example - per-theme opacity, overriding the 82% default in overrides.css.
+ * Uncomment and tune per theme.
+ *
+ * window.background {
+ *   background-color: color-mix(in srgb, @theme_bg_color 88%, transparent);
+ * }
+ */

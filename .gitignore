@@ -1,0 +1,10 @@
+# Machine-local - each box gets its own, see monitors.conf.example
+.config/hypr/monitors.conf
+
+# Regenerated locally, not source
+.config/ags/node_modules/
+.config/ags/@girs/
+**/__pycache__/
+*.pyc
+
+install.log
