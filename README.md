@@ -45,9 +45,23 @@ packages - do that first/after, see below.
   box you're on (`hyprctl monitors all` once Hyprland is running shows real
   output names).
 
+## Wallpapers
+
+`wallpapers/` holds only the specific files a tracked config actually
+points at (each theme's `theme.conf` `wallpaper=` key, plus the boot-time
+default in `hypr/scripts/set-wallpaper.sh`) - currently 3 files, a few MB.
+`install.sh` restores them to `~/Pictures/Wallpapers/<Category>/...`,
+matching the paths configs expect.
+
+The full wallpaper library (~1.5G on the source machine) is **not** in this
+repo - that's personal media, not config, and doesn't belong in git. When
+you add a theme with a new wallpaper, run `scripts/collect-wallpapers.sh`
+to pull that file in automatically and commit the result.
+
 ## Deliberately not in here
 
 - `waybar`/`rofi`-adjacent bar configs that aren't actually launched
 - The ~120M of downloaded third-party GTK theme packs in `~/.themes` -
   fetch the ones you need per `packages.other.md`
+- The full `~/Pictures/Wallpapers` library - see Wallpapers above
 - Browser profile / any personal data

@@ -42,9 +42,12 @@ if [ ! -e "$SRC/.config/hypr/monitors.conf" ]; then
     echo "'hyprctl monitors all' once you're in a session to see real names/modes."
 fi
 
-# Wallpaper referenced by hypr/scripts/set-wallpaper.sh ($HOME/Pictures/...)
-mkdir -p "$HOME/Pictures/Wallpapers/Galaxy"
-cp -n "$SRC/wallpapers/"* "$HOME/Pictures/Wallpapers/Galaxy/"
+# Wallpapers referenced by theme.conf / set-wallpaper.sh - only the specific
+# files configs point at (see scripts/collect-wallpapers.sh), restored to
+# their original ~/Pictures/Wallpapers/<Category>/ subpath. The rest of your
+# wallpaper library is out of scope for this repo - sync it however you sync
+# large media.
+rsync -a "$SRC/wallpapers/" "$HOME/Pictures/Wallpapers/"
 
 cat <<'EOF'
 
