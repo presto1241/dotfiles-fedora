@@ -1,0 +1,9 @@
+# Pinned commits for tools that get built from source instead of installed
+# via dnf. Read by build.sh. Format: name  repo-url  commit
+#
+# To bump a pin: cd .build/<name>, check out whatever you want to move to,
+# confirm it still builds and runs, then copy its commit hash back in here.
+#
+# name                            repo                                                          commit
+ags                                https://github.com/aylur/ags.git                              bbee2f18939f1ec7ff720e717cf305e73635628f
+hyprland-preview-share-picker      https://github.com/WhySoBad/hyprland-preview-share-picker      7dc38ae9b835a88923df25b751f56e74989cf7dc

@@ -32,10 +32,16 @@ packages - do that first/after, see below.
 
 ## Packages
 
-- `packages.dnf.txt` - everything installable via `dnf`
-- `packages.other.md` - everything that isn't packaged and has to be built
-  or fetched by hand: `ags` itself, `hyprland-preview-share-picker`, the
-  third-party GTK theme packs, and the Nerd Font
+- `packages.dnf.txt` - everything installable via `dnf` (run this first -
+  `ags` and the picker won't build without their deps)
+- `sources.lock` + `build.sh` - `ags` and `hyprland-preview-share-picker`
+  aren't packaged. `build.sh` clones each one, checks out the commit pinned
+  in `sources.lock`, and builds/installs it, so a fresh machine gets the
+  exact versions this repo was built against instead of whatever's on
+  `HEAD` that day.
+- `packages.other.md` - what each of those two tools is, why it isn't just
+  a dnf package, and how to fetch the GTK theme packs / Nerd Font that
+  neither `dnf` nor `build.sh` cover
 
 ## Machine-specific: monitors
 

@@ -1,14 +1,32 @@
-# Not packaged - build these by hand
+# Not packaged - built from source via build.sh
+
+`./build.sh` clones each project below into `.build/<name>/` (gitignored),
+checks out the commit pinned in `sources.lock`, and builds/installs it. Run
+it after `dnf install`-ing everything in `packages.dnf.txt` - both tools
+need real build deps present first (ags in particular will fail without the
+astal COPR packages and meson/ninja).
+
+To move a pin forward: `cd .build/<name>`, check out whatever you want,
+confirm it still works, then copy that commit hash into `sources.lock` and
+commit.
 
 ## ags (Astal Shell CLI)
 
 The actual desktop shell (`.config/ags/`) - bar, notifications, app icons.
-`/usr/local/bin/ags` on the source machine is a Go binary, not an RPM. Build
-it from [Aylur/ags](https://github.com/Aylur/ags) (needs `golang`, already in
-packages.dnf.txt), install the resulting binary to somewhere on `$PATH`
-(`/usr/local/bin` matches this repo's assumptions), then from
-`.config/ags/` run `npm install` to pull in the `ags`/`gnim` TypeScript
-bindings referenced by `package.json`.
+[Aylur/ags](https://github.com/Aylur/ags) is a meson project: it builds a Go
+CLI binary but links it (via `-ldflags`) against hardcoded paths to the
+gtk4-layer-shell lib, the installed JS runtime dir, `gjs`, and `bash` - so
+this is **not** a plain `go build`, meson has to drive it. `build.sh` runs:
+
+```bash
+npm install
+meson setup build
+sudo meson install -C build   # default prefix /usr/local, hence sudo
+```
+
+It also links against the Astal C libraries (`libastal-*`), which come from
+the `starfall/astalRPM` COPR, not core Fedora repos - see the comment at the
+top of `packages.dnf.txt`.
 
 Launched via `exec-once = ags run` in hyprland.conf.
 
@@ -16,18 +34,11 @@ Launched via `exec-once = ags run` in hyprland.conf.
 
 Screen-share picker with live window/monitor thumbnails, used instead of the
 stock text-only `hyprland-share-picker` - see `.config/hypr/xdph.conf`.
-
-```bash
-git clone --recursive https://github.com/WhySoBad/hyprland-preview-share-picker
-cd hyprland-preview-share-picker
-cargo build --release
-cargo install --path .
-```
-
-Needs a Rust toolchain (`rustc`/`cargo`) plus `gtk4-devel` and
-`gtk4-layer-shell-devel` (both in packages.dnf.txt). If the build complains
-about unstable features, it wants nightly: `rustup toolchain install nightly`
-and build with `cargo +nightly build --release` instead.
+`build.sh` runs `cargo install --path . --force`, which needs a Rust
+toolchain (`rustc`/`cargo`) plus `gtk4-devel` and `gtk4-layer-shell-devel`
+(in packages.dnf.txt). If the build complains about unstable features, it
+wants nightly: `rustup toolchain install nightly`, then edit that one line
+in `build.sh` to `cargo +nightly install ...`.
 
 Installs to `~/.cargo/bin/hyprland-preview-share-picker`, which is what
 `xdph.conf` in this repo points at.

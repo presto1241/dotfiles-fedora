@@ -1,4 +1,5 @@
-# dnf install $(grep -v '^#' packages.dnf.txt)
+# sudo dnf copr enable starfall/astalRPM   (needed for the libastal-* packages below)
+# sudo dnf install $(grep -v '^#' packages.dnf.txt)
 
 # Hyprland itself
 hyprland
@@ -29,12 +30,36 @@ gtk4-layer-shell
 # Night light
 gammastep
 
-# Build deps for hyprland-preview-share-picker (see packages.other.md)
+# Build deps for hyprland-preview-share-picker (see packages.other.md,
+# build.sh)
 gtk4-layer-shell-devel
 gtk4-devel
 
-# AGS/astal shell runtime (see packages.other.md - the ags binary itself
-# is not packaged and gets built from source)
+# Build deps for ags itself (see packages.other.md, build.sh) - upstream's
+# Fedora list: https://aylur.github.io/ags-docs/guide/install
+meson
+ninja-build
 golang
 nodejs
 nodejs-npm
+gobject-introspection-devel
+gtk3-devel
+gtk-layer-shell-devel
+
+# Astal C libraries ags links against at build time. Not in core Fedora
+# repos - enable the COPR first:
+#   sudo dnf copr enable starfall/astalRPM
+libastal-io
+libastal-io-devel
+libastal-4
+libastal-4-devel
+libastal-hyprland
+libastal-hyprland-devel
+libastal-tray
+libastal-tray-devel
+libastal-notifd
+libastal-notifd-devel
+libastal-apps
+libastal-apps-devel
+libastal-mpris
+libastal-mpris-devel
