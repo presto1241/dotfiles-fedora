@@ -33,6 +33,11 @@ export PATH="$PATH:/home/presto/.lmstudio/bin"
 # End of LM Studio CLI section
 
 export PATH="$PATH:/home/presto/.dotnet/tools"
-export PS1="┌ \u \w\\n└> "
+export PATH="$PATH:/home/presto/.cargo/bin"
+export PS1="\n┌ \u \w\\n└> "
 
 
+
+#THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
+export SDKMAN_DIR="$HOME/.sdkman"
+[[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"

@@ -189,6 +189,29 @@ def recolor_assets(src_dir, dst_dir, mapping):
 
 
 def main():
+    # svg mode: recolour ONE Kvantum theme SVG in place (no stylesheet, no
+    # PNG asset directory - Kvantum ships all its shape/gradient work as a
+    # single SVG, and [GeneralColors] does not reach colours baked directly
+    # into its paths). Same map-file format as the GTK mode.
+    #
+    #   recolor.py svg <src.svg> <dst.svg> <palette.css> <map-file>
+    if sys.argv[1] == 'svg':
+        src, dst, palette_css, map_file = sys.argv[2:6]
+        colors = pal.load(palette_css)
+        mapping = load_map(map_file, colors)
+        if not mapping:
+            print(src)
+            return
+        if not _recolor_svg(src, dst, mapping):
+            # No mapped colour actually occurs in this SVG - still have to
+            # produce dst, since the caller no longer symlinks the original.
+            with open(src, encoding='utf-8', errors='surrogateescape') as fh:
+                text = fh.read()
+            with open(dst, 'w', encoding='utf-8', errors='surrogateescape') as fh:
+                fh.write(text)
+        print(dst)
+        return
+
     upstream, palette_css, map_file, outdir, tag = sys.argv[1:6]
     # url() rewrites bake this path into the stylesheet, so it has to be
     # absolute regardless of how the caller spelled it.

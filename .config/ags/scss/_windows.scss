@@ -24,5 +24,7 @@ window.DesktopWidget {
 }
 
 window.AppBar {
+  margin: 4px;
+  padding: 0px;
   transition: all 0.25s;
 }

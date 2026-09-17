@@ -50,7 +50,7 @@ windowrule = stay_focused on, match:class Unity, match:title ^$
 # popups is their real menu size (Unity sets min==max in WM_NORMAL_HINTS).
 $menuX = ((cursor_x-((cursor_x+window_w-monitor_w)+abs(cursor_x+window_w-monitor_w))/2)+abs(cursor_x-((cursor_x+window_w-monitor_w)+abs(cursor_x+window_w-monitor_w))/2))/2
 $menuY = 30+((cursor_y-((cursor_y+window_h-monitor_h+62)+abs(cursor_y+window_h-monitor_h+62))/2-30)+abs(cursor_y-((cursor_y+window_h-monitor_h+62)+abs(cursor_y+window_h-monitor_h+62))/2-30))/2
-# windowrule = match:class Unity, match:title ^Unity$, move $menuX $menuY
+windowrule = match:class Unity, match:title ^Unity$, move $menuX $menuY
 
 
 ################
@@ -83,7 +83,7 @@ windowrule {
     no_focus = true
     no_initial_focus = true
     focus_on_activate = false
-#     move = $tipX $tipY
+    move = $tipX $tipY
 }
 
 # Fix for https://github.com/yasirkula/UnityAssetUsageDetector tooltips
@@ -114,50 +114,50 @@ windowrule = match:class Unity, match:title UI Builder, opaque true
 $selectorPos = (cursor_x-(window_w*0.5)) (cursor_y-(window_h*0.05))
 
 # Selection Dropdowns
-# windowrule = match:class Unity, match:title Select.*, move $selectorPos
+windowrule = match:class Unity, match:title Select.*, move $selectorPos
 windowrule = min_size 500 350, match:initial_title Select Preset...
 windowrule = min_size 300 100, match:initial_title UnityEditor.Snap.GridSettingsWindow
 
 # Add Component
-# windowrule = match:class Unity, match:title UnityEditor.AddComponent.AddComponentWindow, move $selectorPos
+windowrule = match:class Unity, match:title UnityEditor.AddComponent.AddComponentWindow, move $selectorPos
 
 # Volume Override
-# windowrule = match:class Unity, match:title UnityEditor.Rendering.FilterWindow.*, move $selectorPos
+windowrule = match:class Unity, match:title UnityEditor.Rendering.FilterWindow.*, move $selectorPos
 
 # Icon Selector
-# windowrule = match:class Unity, match:title UnityEditor.IconSelector, move $selectorPos
+windowrule = match:class Unity, match:title UnityEditor.IconSelector, move $selectorPos
 
 # Material Shader Dropdown
-# windowrule = match:class Unity, match:title UnityEditor.IMGUI.Controls.AdvancedDropdownWindow, move $selectorPos
+windowrule = match:class Unity, match:title UnityEditor.IMGUI.Controls.AdvancedDropdownWindow, move $selectorPos
 
 # Shader Graph Add Node
-# windowrule = match:class Unity, match:title UnityEditor.Searcher.SearcherWindow, move $selectorPos
+windowrule = match:class Unity, match:title UnityEditor.Searcher.SearcherWindow, move $selectorPos
 
 # VFX Graph Add Node
-# windowrule = match:class Unity, match:title UnityEditor.VFX.UI.VFXFilterWindow, move $selectorPos
+windowrule = match:class Unity, match:title UnityEditor.VFX.UI.VFXFilterWindow, move $selectorPos
 
 # Tilemap
-# windowrule = match:class Unity, match:title Tile Palette, move $selectorPos
+windowrule = match:class Unity, match:title Tile Palette, move $selectorPos
 
 # Rendering Selection
-# windowrule = match:class Unity, match:title UnityEditor.Rendering.FilterWindow, move $selectorPos
+windowrule = match:class Unity, match:title UnityEditor.Rendering.FilterWindow, move $selectorPos
 
 # Animation Conditions
-# windowrule = match:class Unity, match:title UnityEditor.IMGUI.Controls.AdvancedDropdownWindow, move $selectorPos
+windowrule = match:class Unity, match:title UnityEditor.IMGUI.Controls.AdvancedDropdownWindow, move $selectorPos
 
 # Add Animation Property
-# windowrule = match:class Unity, match:title UnityEditorInternal.AddCurvesPopup, move $selectorPos
+windowrule = match:class Unity, match:title UnityEditorInternal.AddCurvesPopup, move $selectorPos
 
 # Input Dropdown
-# windowrule = match:class Unity, match:title UnityEngine.InputSystem.Editor.AdvancedDropdownWindow, move $selectorPos
+windowrule = match:class Unity, match:title UnityEngine.InputSystem.Editor.AdvancedDropdownWindow, move $selectorPos
 windowrule = min_size 500 500, match:initial_title UnityEngine.InputSystem.Editor.AdvancedDropdownWindow
 
 # Package Manager Dropdown
 windowrule = match:class Unity, match:title UnityEditor.PackageManager.UI.Internal.DropdownContainer, size 500 50
-# windowrule = match:class Unity, match:title UnityEditor.PackageManager.UI.Internal.DropdownContainer, move (cursor_x-(window_w*0.95)) (cursor_y-(window_h*0.7))
+windowrule = match:class Unity, match:title UnityEditor.PackageManager.UI.Internal.DropdownContainer, move (cursor_x-(window_w*0.95)) (cursor_y-(window_h*0.7))
 
 # Save Layout
-# windowrule = match:class Unity, match:title Save Layout, move (cursor_x-(window_w*0.5)) (cursor_y-(window_h*0.8))
+windowrule = match:class Unity, match:title Save Layout, move (cursor_x-(window_w*0.5)) (cursor_y-(window_h*0.8))
 
 ###############
 ### PICKERS ###
@@ -170,7 +170,7 @@ windowrule {
     match:title = Color
 
     opaque = true
-#     move = (cursor_x-(window_w*0.5)) (cursor_y-150)
+    move = (cursor_x-(window_w*0.5)) (cursor_y-150)
 }
 
 # HDR Color Picker
@@ -180,7 +180,7 @@ windowrule {
     match:title = HDR Color
 
     opaque = true
-#     move = (cursor_x-(window_w*0.5)) (cursor_y-150)
+    move = (cursor_x-(window_w*0.5)) (cursor_y-150)
 }
 
 # Gradient
@@ -190,7 +190,7 @@ windowrule {
     match:title = Gradient Editor.*
 
     opaque = true
-#     move = (cursor_x-(window_w*0.5)) (cursor_y-100)
+    move = (cursor_x-(window_w*0.5)) (cursor_y-100)
 }
 
 # HDR Gradient
@@ -200,8 +200,8 @@ windowrule {
     match:title = HDR Gradient Editor.*
 
     opaque = true
-#     move = (cursor_x-(window_w*0.5)) (cursor_y-100)
+    move = (cursor_x-(window_w*0.5)) (cursor_y-100)
 }
 
 # Animation Curve
-# windowrule = match:class Unity, match:title Curve.*, move (cursor_x-(window_w*0.5)) (cursor_y-(window_h*0.5))
+windowrule = match:class Unity, match:title Curve.*, move (cursor_x-(window_w*0.5)) (cursor_y-(window_h*0.5))

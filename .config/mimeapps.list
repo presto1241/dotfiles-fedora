@@ -17,6 +17,9 @@ application/xhtml+xml=zen-browser.desktop
 application/x-extension-xhtml=zen-browser.desktop
 application/x-extension-xht=zen-browser.desktop
 x-scheme-handler/claude-cli=claude-code-url-handler.desktop
+x-scheme-handler/codex=chatgpt.desktop
+inode/directory=org.kde.dolphin.desktop
+application/x-gnome-saved-search=org.kde.dolphin.desktop
 
 [Added Associations]
 x-scheme-handler/http=zen-browser.desktop;

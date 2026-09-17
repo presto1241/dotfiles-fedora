@@ -1,0 +1,39 @@
+# dark-gray - Qt/KDE colour OVERRIDES.
+#
+# Empty on purpose. apply.sh DERIVES the KDE colour roles from palette.css via
+# lib/derive.py, so colours live in exactly one place and cannot drift between
+# the GTK and Qt sides. This file is only for KDE roles that have no palette
+# equivalent at all; it is applied after the derived values, so anything here
+# wins.
+#
+# DecorationFocus/DecorationHover used to be written here as a literal
+# 110,118,129. That was a second copy of the accent, and it stopped matching
+# the moment palette.css changed - so they are derived now too, from
+# accent_bg_color. Do not put them back.
+#
+# ── Why the Qt side needs kdeglobals at all ───────────────────────────────────
+#
+# Qt cannot read CSS, so palette.css never reaches it directly. But you also do
+# not hand-write the Qt palette here, because Kvantum supplies it and wins:
+# measured, setting Colors:Window to magenta left the Qt palette completely
+# unchanged at #101010. That is why apply.sh now also generates a Kvantum theme
+# from palette.css - see the Kvantum section there. THAT is what recolours
+# Dolphin.
+#
+# What kdeglobals still decides on its own is QStyleHints::colorScheme(). With
+# a LIGHT kdeglobals and a DARK Kvantum theme the result was:
+#
+#     palette #101010 (dark, Kvantum)  +  colorScheme Light (kdeglobals)
+#
+# KF6 apps consult both, which is how Dolphin ended up drawing white rows on a
+# dark palette. So kdeglobals and the Kvantum theme must agree on dark-vs-light.
+# Deriving both from palette.css is what guarantees that.
+#
+# These values also become the real palette if Kvantum is ever not the style -
+# with QT_STYLE_OVERRIDE=Fusion the same light kdeglobals produced a genuinely
+# light palette (#fcfcfc).
+#
+# ── Format, if you do need an override ────────────────────────────────────────
+#
+# [Colors:Window]
+# SomeRoleWithNoPaletteEquivalent=110,118,129

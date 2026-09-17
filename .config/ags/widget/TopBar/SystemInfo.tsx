@@ -101,6 +101,12 @@ function gpuUsage(): number {
 
 type Stats = { cpu: number; cpuTemp: number; gpu: number; gpuTemp: number; ram: number }
 
+// Left-pads with spaces so "CPU 1%" and "CPU 100%" render the same width
+// instead of the label jittering as the digit count changes.
+function fmtStat(n: number, unit: string): string {
+  return `${String(n + unit).padEnd(3, " ")}`
+}
+
 export default function SystemInfo() {
   const stats = createPoll<Stats>(
     { cpu: 0, cpuTemp: 0, gpu: 0, gpuTemp: 0, ram: 0 },
@@ -118,10 +124,10 @@ export default function SystemInfo() {
   const [gpuShowTemp, setGpuShowTemp] = createState(false)
 
   const cpuLabel = createComputed(() =>
-    cpuShowTemp() ? `CPU ${stats().cpuTemp}c` : `CPU ${stats().cpu}%`,
+    cpuShowTemp() ? `CPU ${fmtStat(stats().cpuTemp, "c")}` : `CPU ${fmtStat(stats().cpu, "%")}`,
   )
   const gpuLabel = createComputed(() =>
-    gpuShowTemp() ? `GPU ${stats().gpuTemp}c` : `GPU ${stats().gpu}%`,
+    gpuShowTemp() ? `GPU ${fmtStat(stats().gpuTemp, "c")}` : `GPU ${fmtStat(stats().gpu, "%")}`,
   )
 
   return (
@@ -132,7 +138,7 @@ export default function SystemInfo() {
       <button onClicked={() => setGpuShowTemp((v) => !v)}>
         <label label={gpuLabel} />
       </button>
-      <label label={stats.as((s) => `RAM ${s.ram}%`)} />
+      <label label={stats.as((s) => `RAM ${fmtStat(s.ram, "%")}`)} />
     </box>
   )
 }

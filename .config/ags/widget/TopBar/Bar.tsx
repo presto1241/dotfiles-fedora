@@ -43,7 +43,6 @@ export default function Bar(gdkmonitor: Gdk.Monitor) {
         <box $type="end" spacing={4}>
           <box class="widget-group" spacing={4}>
             <SystemTray/>
-            <MediaControls/>
             <MonitorBrightness/>
             <SystemInfo/>
           </box>

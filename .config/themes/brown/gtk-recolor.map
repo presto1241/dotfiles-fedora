@@ -1,0 +1,127 @@
+# dark-gray - literal colours to rewrite inside the upstream GTK stylesheet.
+#
+# WHY THIS FILE EXISTS
+#
+# palette.css redefines GTK's named colours, which works only for themes that
+# actually USE those names. Juno-ocean-v40 does not: it was compiled from SASS
+# with the accent inlined, so gtk-3.0/gtk-dark.css contains #00A9A5 as a
+# literal 112 times and mentions @theme_selected_bg_color exactly once - on its
+# own @define-color line, which nothing then reads. Redefining the name is
+# therefore inert, and the desktop stays teal no matter what palette.css says.
+#
+# set-theme.sh fixes that by generating a recoloured COPY of the upstream
+# stylesheet into ~/.cache/themes/ and importing that instead of the original.
+# ~/.themes is never modified.
+#
+# FORMAT
+#
+#   <source-hex>  <palette-colour-name>
+#
+# Matching is case-insensitive and covers both spellings the SASS emits:
+#   #00A9A5                    -> the palette colour
+#   rgba(0, 169, 165, 0.6)     -> the palette colour at that same alpha
+#
+# The right-hand side must be an @define-color name defined in palette.css.
+# An unknown name is reported and skipped rather than silently ignored.
+
+# Primary accent - selection, focus rings, active tabs, checked switches.
+#
+# Target theme_selected_bg_color, NOT accent_bg_color. palette.css defines both
+# (accent_bg_color is libadwaita's spelling of the same colour), and derive.py
+# resolves the Qt side as theme_selected_bg_color first - so aiming the two at
+# different names meant editing one moved GTK while editing the other moved
+# Dolphin. Same colour, one name, everywhere.
+00A9A5  theme_selected_bg_color
+# Its darker companion, used for pressed states and accent borders.
+007673  accent_dark_color
+
+# More teal shades for specific interactive/focus states, missed by the
+# original literal count above (that one only measured the BASE accent
+# literal, not every state-specific variant SASS also emitted). Found by
+# grepping the generated gtk-4.0.css for "teal" after the base fix still left
+# PulseMeeter's mute button and volume slider teal - the mute button only
+# when :checked, the slider only when the window is :backdrop (unfocused).
+00908C  theme_selected_bg_color   # button :active/:checked
+00C3BE  theme_selected_bg_color   # scale/progressbar highlight, :backdrop state
+00DCD7  theme_selected_bg_color   # scrollbar slider :hover:active
+00F6F0  theme_selected_bg_color   # needs-attention glow keyframe
+009895  theme_selected_bg_color   # budgie flowboxchild :selected:hover
+
+# The MINT_* ramp plus its one-off variants - text colour for links/content
+# sitting on top of a selection, at various states (hover/active/visited/
+# disabled). All route to the same fg used for text on the accent.
+89FFDD  theme_selected_fg_color   # MINT_100
+43D6B5  theme_selected_fg_color   # MINT_300
+28BCA3  theme_selected_fg_color   # MINT_500
+0E9A83  theme_selected_fg_color   # MINT_700
+007367  theme_selected_fg_color   # MINT_900
+CBEDEC  theme_selected_fg_color   # *:selected *:link:active
+98DCDA  theme_selected_fg_color   # *:selected *:link:visited
+66CBC9  theme_selected_fg_color   # disabled selected view/treeview text
+7FD4D2  theme_selected_fg_color   # disabled selection text (entry etc.)
+E5F6F5  theme_selected_fg_color   # *:selected *:link:hover
+
+# Secondary accent. Juno uses this orange for checkboxes, radios and progress.
+# Assets carry it too, so it is recoloured in the PNGs as well.
+F78C6C  theme_selected_bg_color
+
+# Status colours, so error/warning surfaces match palette.css.
+FF2046  error_color
+FF3A5B  error_color
+FF5370  error_color
+56CEFF  success_color
+
+# ── Asset colours ─────────────────────────────────────────────────────────────
+# The PNGs in the theme's assets/ dir were generated from a DIFFERENT palette
+# than the stylesheet - measured, not one of the hexes above appears in them.
+# So they need their own entries, or checkboxes and window buttons keep the old
+# colours while everything around them changes.
+#
+# Matching for assets is nearest-colour within a small radius, so the
+# antialiased variants (#d08771, #d0876f, ...) follow their base colour.
+#
+# Where each one is used, measured across the 230 PNGs:
+D08770  theme_selected_bg_color   # checkbox / radio / switch fill  (52 files)
+13A0BF  theme_selected_bg_color   # grid + menu selection, scale slider (6 files)
+37B9A5  theme_selected_bg_color   # calendar-selected (1 file)
+EBCB8B  warning_color     # titlebar minimise button (3 files)
+BF616A  error_color       # titlebar close button (2 files)
+A3BE8C  success_color     # titlebar maximise button (2 files)
+
+# ── The rest of Juno's palette ────────────────────────────────────────────────
+# The accent is not the only thing this theme baked in - it inlined EVERY
+# colour. Counted in gtk-3.0/gtk-dark.css: #BFC3C4 (its foreground) 124 times,
+# #040407 (its borders) 113, #131520 (its base) 49, #0F111A (its window bg) 41.
+#
+# So @theme_bg_color and friends were just as inert as @theme_selected_bg_color
+# was. A palette.css edit changed the NAME lookup - which is all the ags bar
+# reads, and why the bar tracked the palette while apps did not - but every
+# actual painted surface in a GTK app still came from these literals.
+#
+# Mapping them is what finally makes palette.css authoritative for GTK.
+
+# Surfaces, darkest first. Kept as distinct shades rather than collapsed onto
+# one colour, so the theme keeps its sense of depth.
+090B10  surface_sunken_color   # sunken frames, scrollbar troughs
+0A0B11  surface_sunken_color
+0D0F17  sidebar_bg_color       # sidebars, gutters
+0F111A  theme_bg_color         # window background
+131520  theme_base_color       # entries, lists, text views
+151722  insensitive_bg_color   # disabled surfaces
+151724  theme_unfocused_base_color
+191C2C  button_bg_color        # button face
+1A1E2D  button_hover_bg_color
+31363D  button_active_bg_color
+
+# Borders.
+040407  borders
+050509  unfocused_borders
+
+# Foregrounds.
+BFC3C4  theme_fg_color
+D1D1D1  theme_fg_color
+CCCFD0  theme_fg_color
+FEFEFE  theme_selected_fg_color   # text on an accent fill
+9DA1A4  insensitive_fg_color
+676A6F  insensitive_fg_color
+646669  insensitive_fg_color

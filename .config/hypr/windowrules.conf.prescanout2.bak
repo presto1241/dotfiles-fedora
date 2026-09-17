@@ -84,40 +84,15 @@ windowrule {
 }
 
 # Purely a background helper (pipes X11 screen-share compatibility) with no
-# real UI. This used to park it on "special:hidden", which turned out to
-# silently disable tearing AND direct scanout for fullscreen games.
-#
-# Hyprland's solitary-client check bails out if ANY special workspace on the
-# monitor has alpha > 0 (src/output/Monitor.cpp, SC_WORKSPACES). A special
-# workspace that is never opened never runs its fade-out, and on every
-# monitor connect/disconnect Hyprland instant-warps each workspace it
-# relocates to alpha 1 - special ones included - so one hotplug leaves an
-# invisible, permanently-blocking workspace behind. No solitary client means
-# no tearing candidate at all. Measured live: HDMI-A-1 reported
-# solitaryBlockedBy ["WORKSPACES"] with Rocket League fullscreen, and moving
-# this workspace off the monitor made the game solitary instantly.
-#
-# So hide it in place instead of hiding it on a workspace: 1x1, fully
-# transparent, unfocusable. A zero-opacity window doesn't count as visible
-# for the solitary check either (CWindow::visible() -> visibleByAlpha), so it
-# can share the game's workspace without blocking anything. The dock and
-# Alt+Tab hiding that special:hidden used to provide for free now comes from
-# class filters in ~/.config/ags/ignored-windows.conf and scripts/alt-tab.sh.
+# real UI - parks it on a hidden workspace so it keeps running but never
+# shows up as a stray black window, in the dock, or in Alt+Tab.
 windowrule {
     name = hide-xwaylandvideobridge
     match {
         class = ^(xwaylandvideobridge)$
     }
-    float = 1
-    max_size = 1 1
-    # Two values so the inactive-opacity default (0.75) can't bring it back;
-    # "override" is what makes the rule win over decoration:*_opacity.
-    opacity = 0.0 override 0.0 override
+    workspace = special:hidden silent
     no_focus = 1
-    no_initial_focus = 1
-    no_anim = 1
-    no_blur = 1
-    no_shadow = 1
 }
 
 # Rocket League runs through Proton as an XWayland app. Proton sets the X11
@@ -217,17 +192,13 @@ windowrule {
 }
 
 # Center every floating window when it opens
-# DISABLED - confirmed this was what centered the mispositioned Unity
-# dropdowns/popups instead of placing them at the cursor. Uncomment if
-# other floats (pavucontrol, polkit, file pickers etc.) turn out to need
-# centering back.
-# windowrule {
-#     name = center-floating
-#     match {
-#         float = 1
-#     }
-#     center = 1
-# }
+windowrule {
+    name = center-floating
+    match {
+        float = 1
+    }
+    center = 1
+}
 
 # Unity Editor window rules - see ~/.config/hypr/UnityFix.conf
 source = ~/.config/hypr/UnityFix.conf

@@ -8,5 +8,10 @@
  **/
 
 * {
-    font: "CaskaydiaCove Nerd Font 10";
+    /* Only "CaskaydiaCove Nerd Font Propo" is actually installed (see
+     * `fc-list | grep -i caskaydia`) - the non-Propo family name below
+     * doesn't exist, so fontconfig silently fell back to Noto Sans, which
+     * has no Nerd Font icon glyphs. That's why the U+F002 search glyph in
+     * style-1.rasi's display-drun rendered as a blank box. */
+    font: "CaskaydiaCove Nerd Font Propo 10";
 }

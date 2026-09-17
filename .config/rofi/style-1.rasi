@@ -49,7 +49,7 @@ mainbox {
     border-radius:               0px 0px 0px 0px;
     border-color:                @selected;
     background-color:            transparent;
-    children:                    [ "inputbar", "listview" ];
+    children:                    [ "inputbar", "message", "listview" ];
 }
 
 /*****----- Inputbar -----*****/
@@ -163,6 +163,16 @@ error-message {
     background-color:            black / 10%;
     text-color:                  @foreground;
 }
+
+message {
+    padding:                     5px; 
+    border:                      2px solid;
+    border-radius:               10px;
+    border-color:                @selected;
+    background-color:            black / 10%;
+    text-color:                  @foreground;
+}
+
 textbox {
     background-color:            transparent;
     text-color:                  @foreground;

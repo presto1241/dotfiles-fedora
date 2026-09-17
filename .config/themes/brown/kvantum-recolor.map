@@ -1,0 +1,31 @@
+# cozy-house - literal colours to rewrite inside NoMansSky's Kvantum SVG.
+#
+# WHY THIS FILE EXISTS
+#
+# Kvantum's [GeneralColors] (kvconfig, derived by lib/derive.py) covers flat
+# colour ROLES - button face, text, highlight.color, etc. It does NOT reach a
+# colour baked directly into the theme's SVG artwork, and Kvantum draws
+# everything - shapes, gradients, strokes - from one SVG per theme.
+#
+# Measured: Dolphin's Places sidebar kept a GNOME/Breeze blue selection
+# (#62a0ea) no matter what Colors:Selection or highlight.color were set to -
+# even a wild kdeglobals test value (magenta) changed the focus ring
+# elsewhere in the window but never touched the sidebar. Traced to a
+# <rect stroke="#62a0ea"> baked into the "button-toggled" element group in
+# NoMansSky.svg - not the "#ff00ff" placeholder Kvantum's own runtime tinting
+# looks for, just a literal.
+#
+# FORMAT: same as gtk-recolor.map - "<source-hex>  <palette-colour-name>",
+# case-insensitive, right-hand side must be an @define-color name defined in
+# palette.css.
+
+62A0EA  theme_selected_bg_color   # button-toggled element - Dolphin Places
+                                   # sidebar selection, and anything else
+                                   # Kvantum draws via that same shape
+
+# The other half of the SAME gradient - fourteen <linearGradient> wrappers
+# all xlink:href a single shared pair of stops, #3584e4 -> #62a0ea. Mapping
+# only the light stop above left a visible two-tone brown-to-blue gradient
+# on the selection, since a fill:url(#...) is not caught by a plain hex scan
+# of the element that USES the gradient, only of the <stop> that defines it.
+3584E4  accent_dark_color         # dark stop of the same gradient

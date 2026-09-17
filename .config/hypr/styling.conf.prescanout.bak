@@ -46,10 +46,10 @@ decoration {
     inactive_opacity = 0.75
 
     shadow {
-        enabled = false
-        range = 6
+        enabled = true
+        range = 4
         render_power = 3
-        color = rgba(1a1a1aff)
+        color = rgba(1a1a1aee)
     }
 
     # https://wiki.hypr.land/Configuring/Variables/#blur
@@ -66,42 +66,16 @@ decoration {
         # translucent popover (see scss/_bar.scss) looks translucent-but-
         # sharp instead of matching the bar's blurred pills.
         popups = true
-        # Tried pairing popups with xray on the theory that blurring on top
-        # of an already-blurred top-bar needed it to see past that layer to
-        # the real desktop. Measured with a standalone repro (a throwaway
-        # gtk4-layer-shell window + GtkPopover reusing the top-bar namespace,
-        # auto-opened and screenshotted - no click needed): xray made no
-        # difference, text behind the popover stayed pixel-sharp either way.
-        #
-        # Root cause is upstream, not this config: decoration:blur:popups
-        # blurs an xdg_popup only when its PARENT is a normal toplevel.
-        # gtk4-layer-shell popovers (ags/astal, any GTK4 bar) parent theirs
-        # to a zwlr_layer_shell surface instead, and that combination just
-        # doesn't get blurred on Hyprland 0.56.2 - tracked upstream, closed
-        # "not planned" more than once: hyprwm/Hyprland#7357, #6282, #2134.
-        # No further layerrule/blur tuning here will fix it. The only real
-        # fix is giving the popover its own layer-shell surface instead of
-        # a GtkPopover (SystemTray.tsx), which is a bigger change than a
-        # config tweak - left alone for now, translucent-but-sharp.
-        xray = false
     }
 }
 
 # direct_scanout lets a single fullscreen window (a game) bypass normal
 # compositing and go straight to the display - this defaults OFF, so
-# nothing was getting it, fullscreen or not.
-#
-# "1" applies it to any fullscreen candidate, which is what KWin does by
-# default (it unredirects fullscreen windows). This was "2", which only
-# scanned out windows tagged content=game via a windowrule - and that is
-# why Beat Saber never got it: measured live, the monitor reported
-# directScanoutBlockedBy: ["CONTENT"] with the window fullscreen and
-# contentType=none. Every new game would have needed its own tag.
-#
-# The Rocket League content=game tag below is still worth keeping: it also
-# gates that rule's tearing/immediate behaviour, and is harmless here.
+# nothing was getting it, fullscreen or not. "2" only applies it to windows
+# tagged content=game via windowrule (see the Rocket League rule below),
+# rather than blanket-enabling it for every fullscreen surface.
 render {
-    direct_scanout = 1
+    direct_scanout = 2
 }
 
 # https://wiki.hypr.land/Configuring/Variables/#animations
@@ -131,9 +105,9 @@ animations {
     animation = layersOut,     1,     1.5,   linear,       fade
     animation = fadeLayersIn,  1,     1.79,  almostLinear
     animation = fadeLayersOut, 1,     1.39,  almostLinear
-    animation = workspaces,    1,     3,  easeInOutCubic, slide
-    animation = workspacesIn,  1,     3,  easeInOutCubic, slide
-    animation = workspacesOut, 1,     3,  easeInOutCubic, slide
+    animation = workspaces,    1,     1.94,  easeInOutCubic, slide
+    animation = workspacesIn,  1,     1.21,  easeInOutCubic, slide
+    animation = workspacesOut, 1,     1.94,  easeInOutCubic, slide
     animation = zoomFactor,    1,     7,     quick
 
     # General workspaces animations

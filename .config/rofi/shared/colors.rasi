@@ -13,6 +13,8 @@
  *
  **/
 
-/* Import color-scheme from `colors` directory */
+/* Was a fixed scheme from the `colors` directory (onedark), independent of
+ * the desktop theme. Now generated from the active theme pack's palette.css
+ * by lib/derive.py, same as kitty's current-theme.conf - see apply.sh. */
 
-@import "~/.config/rofi/colors/onedark.rasi"
+@import "~/.config/rofi/current-theme.rasi"

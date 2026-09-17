@@ -44,6 +44,12 @@ export default function NotificationPopups(gdkmonitor: Gdk.Monitor) {
     // user has to dismiss or action it.
     if (n.urgency === Notifd.Urgency.CRITICAL) return
 
+    // expireTimeout is the raw DBus expire_timeout: >0 is a specific ms
+    // value, 0 explicitly means "never expire" (the sender's call, distinct
+    // from CRITICAL), and -1 means "sender has no preference" - only that
+    // last case should fall back to our default.
+    if (n.expireTimeout === 0) return
+
     const ms = n.expireTimeout > 0 ? n.expireTimeout : DEFAULT_TIMEOUT_MS
     timers.set(
       n.id,

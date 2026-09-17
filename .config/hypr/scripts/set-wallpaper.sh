@@ -7,4 +7,4 @@ while ! swww query >/dev/null 2>&1; do
     sleep 0.2
 done
 
-swww img "$HOME/Pictures/Wallpapers/Galaxy/starry_sky_night_stars_122563_2560x1600.jpg"
+swww img "/home/presto/Pictures/Wallpapers/Galaxy/starry_sky_night_stars_122563_2560x1600.jpg"

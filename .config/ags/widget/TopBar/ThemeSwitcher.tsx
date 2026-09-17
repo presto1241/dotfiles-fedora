@@ -2,6 +2,7 @@ import { Gtk } from "ags/gtk4"
 import { execAsync } from "ags/process"
 import GLib from "gi://GLib"
 import { symbolic, ICON_SIZE } from "../icons"
+import { createState } from "ags"
 
 const THEMES_DIR = `${GLib.get_user_config_dir()}/themes`
 const APPLY_SCRIPT = `${THEMES_DIR}/apply.sh`
@@ -25,10 +26,12 @@ function listThemes(): string[] {
   return names.sort()
 }
 
+
 export default function ThemeSwitcher() {
   // Themes are folders on disk that don't change while the bar is running,
   // so this only needs to run once at mount - no reactive state involved.
   const themes = listThemes()
+  const [applyBackground, setApplyBackground] = createState(true);
 
   return (
     <menubutton>
@@ -40,10 +43,22 @@ export default function ThemeSwitcher() {
       <popover hasArrow={false}>
         <box orientation={Gtk.Orientation.VERTICAL}>
           {themes.map((name) => (
-            <button onClicked={() => execAsync([APPLY_SCRIPT, name])}>
+            <button onClicked={() => execAsync([APPLY_SCRIPT, name, applyBackground.peek() ? "" : "--no-switch-wallpaper"])}>
               <label label={name} />
             </button>
           ))}
+
+          <box orientation={Gtk.Orientation.HORIZONTAL}>
+            <togglebutton
+              active={applyBackground}
+              onToggled={() => setApplyBackground((b) => !b)}
+            >
+              <box>
+                <label label={applyBackground.as(active => active ? "✔" : " ")}/>
+                <label label="Inherit Wallpaper"/>
+              </box>
+            </togglebutton>
+          </box>
         </box>
       </popover>
     </menubutton>

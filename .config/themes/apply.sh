@@ -4,6 +4,9 @@
 #   apply.sh dark-gray      switch to that theme
 #   apply.sh --current      print what is active
 #   apply.sh --list         list available themes
+#   apply.sh dark-gray --no-switch-wallpaper
+#                           switch to that theme but leave the current
+#                           wallpaper alone
 #
 # ── What actually applies live, and what does not ─────────────────────────────
 #
@@ -55,6 +58,17 @@ LIB_DIR="$THEMES_DIR/lib"
 export PYTHONDONTWRITEBYTECODE=1
 IFACE="org.gnome.desktop.interface"
 
+NO_SWITCH_WALLPAPER=0
+args=()
+for a in "$@"; do
+  if [[ "$a" == "--no-switch-wallpaper" ]]; then
+    NO_SWITCH_WALLPAPER=1
+  else
+    args+=("$a")
+  fi
+done
+set -- "${args[@]+"${args[@]}"}"
+
 case "${1:-}" in
   --list)
     find "$THEMES_DIR" -mindepth 1 -maxdepth 1 -type d -not -name lib -printf '%f\n' | sort
@@ -71,7 +85,7 @@ case "${1:-}" in
     exit 0 ;;
 esac
 
-THEME="${1:?usage: apply.sh <theme-name> | --list | --current}"
+THEME="${1:?usage: apply.sh <theme-name> [--no-switch-wallpaper] | --list | --current}"
 DIR="$THEMES_DIR/$THEME"
 [[ -d "$DIR" ]] || { echo "apply: no such theme: $THEME" >&2; exit 1; }
 
@@ -150,10 +164,27 @@ if [[ -n "${CFG[kvantum_theme]:-}" ]]; then
     mkdir -p "$KV_GEN_DIR"
     "$LIB_DIR/derive.py" kvantum "$PALETTE" "$KV_BASE_DIR/$KV_BASE.kvconfig" \
       > "$KV_GEN_DIR/$KV_GEN.kvconfig"
-    # Kvantum finds the SVG by the theme's own name, so the link has to be
-    # renamed to match.
-    [[ -f "$KV_BASE_DIR/$KV_BASE.svg" ]] && \
-      ln -sfn "$KV_BASE_DIR/$KV_BASE.svg" "$KV_GEN_DIR/$KV_GEN.svg"
+    # Kvantum finds the SVG by the theme's own name, so the generated copy
+    # has to be renamed to match.
+    #
+    # [GeneralColors] above does not reach a colour baked into the SVG's own
+    # shapes - measured, see kvantum-recolor.map's header. If the pack ships
+    # one, rewrite those literals into a real copy; otherwise fall back to
+    # the symlink, which is fine for a base theme that bakes nothing in.
+    if [[ -f "$KV_BASE_DIR/$KV_BASE.svg" ]]; then
+      # A prior run may have left this as a symlink into the base theme -
+      # recolor.py opens the destination for writing, and following that
+      # link would overwrite the BASE theme's SVG instead of this pack's
+      # copy. Break it first so a write always lands on a real file here.
+      rm -f "$KV_GEN_DIR/$KV_GEN.svg"
+      if [[ -f "$DIR/kvantum-recolor.map" && -x "$LIB_DIR/recolor.py" ]]; then
+        "$LIB_DIR/recolor.py" svg "$KV_BASE_DIR/$KV_BASE.svg" \
+          "$KV_GEN_DIR/$KV_GEN.svg" "$PALETTE" "$DIR/kvantum-recolor.map" \
+          >/dev/null 2>&1 || ln -sfn "$KV_BASE_DIR/$KV_BASE.svg" "$KV_GEN_DIR/$KV_GEN.svg"
+      else
+        ln -sfn "$KV_BASE_DIR/$KV_BASE.svg" "$KV_GEN_DIR/$KV_GEN.svg"
+      fi
+    fi
     KVANTUM_ACTIVE="$KV_GEN"
   else
     [[ -n "$KV_BASE_DIR" ]] || echo "apply: Kvantum theme '$KV_BASE' not found - using it by name anyway" >&2
@@ -217,13 +248,23 @@ if [[ -f "$PALETTE" ]] && [[ -d "$HOME/.config/kitty" ]]; then
   [[ $live -gt 0 ]] && KITTY_STATE="live on $live instance(s)"
 fi
 
+# ── rofi ──────────────────────────────────────────────────────────────────────
+# rofi's .rasi "@name" variables aren't GTK's @define-color, so it can't read
+# palette.css directly either - shared/colors.rasi imports this generated
+# file instead of the fixed colors/onedark.rasi it used to.
+ROFI_STATE="skipped (no palette.css)"
+if [[ -f "$PALETTE" ]] && [[ -d "$HOME/.config/rofi" ]]; then
+  "$LIB_DIR/derive.py" rofi "$PALETTE" > "$HOME/.config/rofi/current-theme.rasi"
+  ROFI_STATE="written - takes effect next launch"
+fi
+
 # ── Hyprland ──────────────────────────────────────────────────────────────────
 # Only reloads if the main config actually source's the theme file; harmless
 # either way.
 command -v hyprctl >/dev/null && hyprctl reload >/dev/null 2>&1 || true
 
 # ── Wallpaper ─────────────────────────────────────────────────────────────────
-if [[ -n "${CFG[wallpaper]:-}" ]]; then
+if [[ "$NO_SWITCH_WALLPAPER" -eq 0 ]] && [[ -n "${CFG[wallpaper]:-}" ]]; then
   wp="${CFG[wallpaper]/#\~/$HOME}"
   [[ -f "$wp" ]] && command -v swww >/dev/null && swww img "$wp" --transition-duration 1 --transition-type wipe --transition-fps 60 >/dev/null 2>&1 || true
 fi
@@ -233,9 +274,11 @@ echo "apply: $THEME (${CFG[name]:-$THEME})"
 echo "  gtk       $GTK_THEME / $SCHEME"
 echo "  qt        ${KVANTUM_ACTIVE:-<unchanged>} / ${CFG[qt_style]:-<unchanged>}"
 echo "  kitty     $KITTY_STATE"
+echo "  rofi      $ROFI_STATE"
 echo
 echo "  Live now:      ags bar, Hyprland, wallpaper, kitty (where reachable)."
-echo "  Needs restart: every GTK app, and every Qt app."
+echo "  Needs restart: every GTK app, and every Qt app. rofi picks up new"
+echo "                 colors on its next launch - nothing to restart there."
 echo "                 GTK parses its CSS once at startup and never re-reads"
 echo "                 it; Kvantum reads its config once. Neither is fixable"
 echo "                 from here - see the header of this script."

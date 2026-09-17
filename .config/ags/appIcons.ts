@@ -93,3 +93,32 @@ export function iconForClass(clientClass: string, pid?: number): string {
 
   return clientClass
 }
+
+// Notifications and windows identify their app completely differently - a
+// notification carries a human-readable appName (always) and a desktop-entry
+// hint (only if the sender bothered to set it), while a window only has its
+// raw WM_CLASS. There's no direct way to compare the two, so instead this
+// resolves the notification through the exact same byWmClass/byDesktopId
+// tables iconForClass uses and returns the icon name it lands on - matching
+// a notification to a taskbar button then just means comparing the two
+// resolved icon names, the same identity iconForClass already trusted to
+// paint the right glyph.
+export function iconForNotification(appName: string, desktopEntry?: string): string {
+  const entryKey = desktopEntry?.replace(/\.desktop$/, "").toLowerCase()
+  const nameKey = appName.toLowerCase()
+
+  const candidates = [
+    entryKey ? byDesktopId.get(entryKey) : undefined,
+    entryKey ? byWmClass.get(entryKey) : undefined,
+    byDesktopId.get(nameKey),
+    byWmClass.get(nameKey),
+    appName,
+  ].filter((name): name is string => Boolean(name))
+
+  const theme = Gtk.IconTheme.get_for_display(Gdk.Display.get_default()!)
+  for (const candidate of candidates) {
+    if (theme.has_icon(candidate)) return candidate
+  }
+
+  return appName
+}

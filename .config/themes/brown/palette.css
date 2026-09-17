@@ -27,19 +27,19 @@
 /* Aliases some themes read instead of the theme_* spellings */
 @define-color bg_color                  #2b2016;
 @define-color base_color                #161616;
-@define-color fg_color                  #d8d8d8;
-@define-color text_color                #d8d8d8;
+@define-color fg_color                  #DBCFC8;
+@define-color text_color                #DBCFC8;
 
 /* Selection / accent. Kept a cool neutral so it reads as grey rather than
  * introducing a hue the rest of the theme does not have. */
-@define-color theme_selected_bg_color   #5e4834;
-@define-color theme_selected_fg_color   #5e4834;
-@define-color selected_bg_color         #6e7681;
-@define-color selected_fg_color         #ffffff;
+@define-color theme_selected_bg_color   #BA9470fa;
+@define-color theme_selected_fg_color   #BA9470fa;
+@define-color selected_bg_color         #81756E;
+@define-color selected_fg_color         #FFF2ED;
 
 /* Chrome */
 @define-color borders                   #5e4834;
-@define-color unfocused_borders         #1f1f1f;
+@define-color unfocused_borders         #241705;
 
 /* Insensitive / backdrop */
 @define-color insensitive_bg_color      #141414;
@@ -57,23 +57,23 @@
 
 /* libadwaita's own names. Apps built on libadwaita read these rather than the
  * theme_* compat aliases above, so both sets have to be covered. */
-@define-color window_bg_color           #0f0f0f;
-@define-color window_fg_color           #d8d8d8;
-@define-color view_bg_color             #161616;
-@define-color view_fg_color             #d8d8d8;
-@define-color headerbar_bg_color        #141414;
-@define-color headerbar_fg_color        #d8d8d8;
-@define-color sidebar_bg_color          #121212;
-@define-color sidebar_fg_color          #d8d8d8;
-@define-color popover_bg_color          #1a1a1a;
-@define-color popover_fg_color          #d8d8d8;
-@define-color dialog_bg_color           #1a1a1a;
-@define-color dialog_fg_color           #d8d8d8;
-@define-color card_bg_color             #161616;
-@define-color card_fg_color             #d8d8d8;
-@define-color accent_bg_color           #6e7681;
+@define-color window_bg_color           #291F1A;
+@define-color window_fg_color           #D9CABD;
+@define-color view_bg_color             #291F1A;
+@define-color view_fg_color             #D9CABD;
+@define-color headerbar_bg_color        #291F1A;
+@define-color headerbar_fg_color        #D9CABD;
+@define-color sidebar_bg_color          #291F1A;
+@define-color sidebar_fg_color          #D9CABD;
+@define-color popover_bg_color          #291F1A;
+@define-color popover_fg_color          #D9CABD;
+@define-color dialog_bg_color           #291F1A;
+@define-color dialog_fg_color           #D9CABD;
+@define-color card_bg_color             #291F1A;
+@define-color card_fg_color             #D9CABD;
+@define-color accent_bg_color           #81786E;
 @define-color accent_fg_color           #ffffff;
-@define-color accent_color              #a8b0ba;
+@define-color accent_color              #BAB3A8;
 
 /* ── Buttons ──────────────────────────────────────────────────────────────────
  * GTK has no standard @define-color for button faces - stock themes shade

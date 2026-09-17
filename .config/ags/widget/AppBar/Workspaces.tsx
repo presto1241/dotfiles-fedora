@@ -1,13 +1,20 @@
-import { createBinding, createComputed, For } from "ags"
-import { Gdk } from "ags/gtk4"
+import { createBinding, createComputed, createState, For } from "ags"
+import { Gdk, Gtk } from "ags/gtk4"
 import Hyprland from "gi://AstalHyprland"
-import { iconForClass } from "../../appIcons"
+import Notifd from "gi://AstalNotifd?version=0.1"
+import { iconForClass, iconForNotification } from "../../appIcons"
 import { ignoreRules, isIgnored } from "../../ignoredWindows"
 
 export default function Workspaces({ gdkmonitor }: { gdkmonitor: Gdk.Monitor }) {
   const hypr = Hyprland.get_default()
   const workspaces = createBinding(hypr, "workspaces")
   const monitors = createBinding(hypr, "monitors")
+
+  // Notifd.notifications is the same "everything unresolved" list
+  // NotificationPopups deliberately avoids for toasts - here it's exactly
+  // what's wanted, since a taskbar badge should track until dismissed/acked,
+  // not disappear on the popup's own timeout.
+  const notifications = createBinding(Notifd.get_default(), "notifications")
 
   const sortedMonitors = monitors((m) =>
     m.sort((a, b) => a.id - b.id)
@@ -61,21 +68,88 @@ export default function Workspaces({ gdkmonitor }: { gdkmonitor: Gdk.Monitor }) 
             const isListed = createComputed(() =>
               !isIgnored(ignoreRules(), client.class, title()),
             )
+
+            // GtkWidget has no hover signal of its own in GTK4 - enter/leave
+            // only exist on an explicit event controller, attached by hand
+            // via $ rather than an onSomething JSX prop. Attached to the
+            // overlay (not the icon button alone) so hovering the close
+            // button that sits on top of it doesn't count as a "leave".
+            const [hovering, setHovering] = createState(false)
+            function attachHoverController(self: Gtk.Overlay) {
+              const motion = new Gtk.EventControllerMotion()
+              motion.connect("enter", () => setHovering(true))
+              motion.connect("leave", () => setHovering(false))
+              self.add_controller(motion)
+            }
+
+            // iconForClass is what the button's own <image> already renders
+            // with - reusing it here means a notification counts toward this
+            // button exactly when it'd resolve to the same glyph, the same
+            // app-identity match iconForClass is already trusted for.
+            const clientIcon = iconForClass(client.class, client.pid)
+            const notificationCount = notifications((list) =>
+              list.filter((n) => iconForNotification(n.appName, n.desktopEntry) === clientIcon)
+                .length,
+            )
+
+            // Most senders never call CloseNotification just because you read
+            // their message in-app, so notifd's unresolved list only ever
+            // grows on its own - see the badge's own count above. Focusing
+            // the app is the closest thing to "I've seen it" this bar can
+            // act on, so it dismisses this app's pending notifications the
+            // same way clicking a notification itself does (Notification.tsx).
+            function dismissNotifications() {
+              for (const n of notifications.get()) {
+                if (iconForNotification(n.appName, n.desktopEntry) === clientIcon) n.dismiss()
+              }
+            }
+
             return (
-              <button
-                visible={isListed}
-                class={buttonClass}
-                onClicked={(b) => {
-                  if (client.workspace?.name === MINIMIZED || b.has_css_class("active")) {
-                    toggleMinimize(client)
-                  } else {
-                    client.focus()
-                  }
-                }}
-                tooltipText={client.title}
-              >
-                <image iconName={iconForClass(client.class, client.pid)} pixelSize={28} />
-              </button>
+              <overlay visible={isListed} $={attachHoverController}>
+                <button
+                  class={buttonClass}
+                  onClicked={(b) => {
+                    // Dismiss either way: clicking a not-yet-focused icon
+                    // means you're about to look at it, and clicking an
+                    // already-active one to minimize it means you were
+                    // already looking at it - both count as "seen".
+                    dismissNotifications()
+                    if (client.workspace?.name === MINIMIZED || b.has_css_class("active")) {
+                      toggleMinimize(client)
+                    } else {
+                      client.focus()
+                    }
+                  }}
+                  tooltipText={client.title}
+                >
+                  <image iconName={clientIcon} pixelSize={28} />
+                </button>
+                <box
+                  $type="overlay"
+                  class="notification-badge"
+                  halign={Gtk.Align.START}
+                  valign={Gtk.Align.START}
+                  visible={notificationCount.as((c) => c > 0)}
+                >
+                  <label label={notificationCount.as((c) => (c > 9 ? "9+" : String(c)))} />
+                </box>
+                <revealer
+                  $type="overlay"
+                  halign={Gtk.Align.END}
+                  valign={Gtk.Align.START}
+                  revealChild={hovering}
+                  transitionType={Gtk.RevealerTransitionType.CROSSFADE}
+                  transitionDuration={150}
+                >
+                  <button
+                    class="close-button"
+                    tooltipText="Close"
+                    onClicked={() => hypr.dispatch("closewindow", `address:0x${client.address}`)}
+                  >
+                    <image iconName="window-close-symbolic" pixelSize={10} />
+                  </button>
+                </revealer>
+              </overlay>
             )
           }
 

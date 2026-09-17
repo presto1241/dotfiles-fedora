@@ -89,6 +89,43 @@
     padding-right: 4px;
   }
   
+  .notification-badge {
+    // No min-width: that was sized to comfortably fit "9+" and stayed that
+    // wide even for a single digit, leaving dead space where the second
+    // character would go. Letting padding alone drive the width means a "1"
+    // gets a tight little circle and "9+" naturally stretches into a pill.
+    min-height: 12px;
+    margin: 1px;
+    padding: 0 3px;
+    border-radius: 6px;
+    background-color: rgba(0, 0, 0, 0.6);
+  }
+
+  .notification-badge label {
+    font-size: 9px;
+    font-weight: bold;
+    color: white;
+  }
+
+  .close-button {
+    min-width: 12px;
+    min-height: 12px;
+    margin: 1px;
+    border-radius: 50%;
+    background-color: rgba(0, 0, 0, 0.6);
+  }
+
+  .close-button:hover {
+    background-color: #e05050;
+  }
+
+  .close-button image {
+    min-width: 10px;
+    margin: 0px;
+    padding: 0px;
+    filter: none;
+  }
+
   .workspace-seperator {
     min-width: 2px;
     margin-top: 8px;
