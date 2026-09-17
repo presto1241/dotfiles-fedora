@@ -26,6 +26,32 @@ build_picker() {
     echo "  -> ~/.cargo/bin/hyprland-preview-share-picker"
 }
 
+build_hyprland() {
+    local dir="$1"
+    # Base package + its runtime deps still have to come from the
+    # lionheartp/Hyprland COPR first (see packages.dnf.txt) - this just
+    # overwrites its files with the patched build, same version otherwise.
+    (cd "$dir" && make release PREFIX=/usr)
+    echo "  installing over the dnf package - needs sudo:"
+    sudo cmake --install "$dir/build"
+    echo "  versionlocking so a routine dnf update can't silently revert this:"
+    sudo dnf versionlock add hyprland
+}
+
+build_hyprbars() {
+    local dir="$1"
+    local commit
+    commit="$(git -C "$dir" rev-parse HEAD)"
+    # hyprpm's own header/plugin-commit auto-matching only works against
+    # public upstream commits - ours is fork-only, so both steps below have
+    # to point at local paths instead of letting it guess. Needs sudo
+    # (hyprpm shells out to it itself for every state write).
+    hyprpm update --hl-url "$BUILD_DIR/Hyprland" --no-shallow
+    hyprpm remove hyprland-plugins 2>/dev/null || true
+    hyprpm add "$dir" "$commit"
+    hyprpm enable hyprbars
+}
+
 while read -r name repo commit; do
     [[ -z "$name" || "$name" == \#* ]] && continue
 
@@ -43,6 +69,8 @@ while read -r name repo commit; do
     case "$name" in
         ags) build_ags "$dir" ;;
         hyprland-preview-share-picker) build_picker "$dir" ;;
+        Hyprland) build_hyprland "$dir" ;;
+        hyprland-plugins) build_hyprbars "$dir" ;;
         *)
             echo "  no build recipe for '$name' - add one in build.sh" >&2
             exit 1

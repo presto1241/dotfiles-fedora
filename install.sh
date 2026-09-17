@@ -24,7 +24,7 @@ link() {
 
 link .bashrc
 
-for d in hypr ags themes rofi gtk-3.0 gtk-4.0 qt6ct fontconfig kitty; do
+for d in hypr ags themes rofi gtk-3.0 gtk-4.0 qt6ct fontconfig kitty Kvantum; do
     link ".config/$d"
 done
 

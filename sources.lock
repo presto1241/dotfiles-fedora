@@ -4,6 +4,12 @@
 # To bump a pin: cd .build/<name>, check out whatever you want to move to,
 # confirm it still builds and runs, then copy its commit hash back in here.
 #
+# Hyprland and hyprland-plugins below are a different case from ags/the
+# picker: those two are pinned to *my own forks*, not upstream, because they
+# carry real local patches (not just a version pin) - see packages.other.md.
+#
 # name                            repo                                                          commit
 ags                                https://github.com/aylur/ags.git                              bbee2f18939f1ec7ff720e717cf305e73635628f
 hyprland-preview-share-picker      https://github.com/WhySoBad/hyprland-preview-share-picker      7dc38ae9b835a88923df25b751f56e74989cf7dc
+Hyprland                           https://github.com/presto1241/Hyprland.git                    1def5cb711ac87f5bf98039ddac3c84a8bbf061e
+hyprland-plugins                   https://github.com/presto1241/hyprland-plugins.git            f434ff8c00860b26003b2e140ff82b4ce9de9a5f

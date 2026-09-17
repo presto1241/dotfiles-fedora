@@ -1,7 +1,13 @@
 # sudo dnf copr enable starfall/astalRPM   (needed for the libastal-* packages below)
+# sudo dnf copr enable lionheartp/Hyprland (needed for `hyprland` below - build.sh
+#                                            then patches and versionlocks it, see
+#                                            sources.lock/packages.other.md)
 # sudo dnf install $(grep -v '^#' packages.dnf.txt)
 
-# Hyprland itself
+# Hyprland itself - from the lionheartp/Hyprland COPR above, NOT stock Fedora
+# repos. build.sh installs a source-patched build over this afterward; this
+# package is still needed first for its runtime deps and as the baseline
+# version that patch applies to.
 hyprland
 hyprland-guiutils
 hyprland-uwsm
@@ -63,3 +69,36 @@ libastal-apps
 libastal-apps-devel
 libastal-mpris
 libastal-mpris-devel
+
+# KDE-adjacent pieces this setup actually uses, that do NOT require the
+# plasma-workspace/plasma-desktop shell (confirmed via `rpm -q --requires`
+# against a live KDE-spin machine) - needed if installing straight onto
+# Hyprland without the KDE spin/plasma-desktop metapackage.
+sddm
+sddm-breeze
+kf6-kwallet
+kwalletmanager5
+polkit-kde
+plasma-integration
+breeze-icon-theme
+breeze-icon-theme-fedora
+breeze-cursor-theme
+
+# Akonadi/PIM stack (korganizer/kontact) - also never part of the Plasma
+# shell, was separately installed even on the source KDE-spin machine.
+# akonadi-server-mysql pulls MariaDB as its backend; mariadb-server is
+# listed explicitly since a minimal install won't provide/start it for you.
+akonadi-server
+akonadi-server-mysql
+akonadi-mime
+akonadi-contacts
+akonadi-search
+akonadi-calendar
+akonadi-import-wizard
+mailimporter-akonadi
+kontactinterface
+korganizer
+korganizer-libs
+kontact
+kontact-libs
+mariadb-server
