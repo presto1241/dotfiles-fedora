@@ -1,3 +1,9 @@
+> [!WARNING]
+> This repo is mostly vibecoded with most if not all UI configs and html/css made by me.
+> I don't really have the time to learn the ins and outs of all the apis and plugins Hyprland has to offer.
+> Putting in warning since some people care about this.
+> Goes without saying but I'm really thankful for the effort Hyprland and all of its plugins or the many other external apps have put in to give users this much customization in the first place.
+
 # dotfiles
 
 Fedora + Hyprland setup, built from what's actually running on the source
