@@ -9,6 +9,12 @@
 # whatever shows up under wallpapers/.
 set -euo pipefail
 
+if ! command -v exiftool >/dev/null; then
+    echo "exiftool not found - needed to strip metadata before wallpapers go into a public repo." >&2
+    echo "  sudo dnf install perl-Image-ExifTool" >&2
+    exit 1
+fi
+
 SRC="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$SRC"
 
@@ -33,5 +39,8 @@ for p in "${paths[@]}"; do
     dest="wallpapers/$rel"
     mkdir -p "$(dirname "$dest")"
     cp -n "$p" "$dest"
+    # Screenshot/capture tools (VRChat, phones, etc.) embed EXIF - usernames,
+    # account IDs, GPS - none of which belongs in a public repo.
+    exiftool -all= -overwrite_original "$dest" >/dev/null
     echo "collected: $rel"
 done

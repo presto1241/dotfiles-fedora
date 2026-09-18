@@ -23,6 +23,7 @@ sync() {
             --exclude '__pycache__' --exclude '*.pyc' \
             --exclude 'node_modules' --exclude '@girs' \
             --exclude 'monitors.conf' \
+            --exclude '*.bak' --exclude '*.disabled' --exclude '*.orig' \
             "$live/" "$repo/"
     else
         cp -a "$live" "$repo"
