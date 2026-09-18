@@ -6,14 +6,14 @@
 
 # dotfiles
 
-Fedora + Hyprland setup, built from what's actually running on the source
-machine (not a distro template).
+Fedora + Hyprland setup, built from what's actually running on my desktop
+(not a distro template).
 
 ## What this is
 
 - **Shell / bar / notifications**: `.config/ags/` - a custom [AGS](https://github.com/Aylur/ags)
-  (Astal) TypeScript config. `waybar`/`nwg-panel` are installed on the
-  source machine but not launched - ags is the real bar.
+  (Astal) TypeScript config. `waybar`/`nwg-panel` are installed on my
+  desktop but not launched - ags is the real bar.
 - **App launcher**: `.config/rofi/` (bound as `$menu` in hyprland.conf)
 - **Theming**: `.config/themes/` - a small custom theme-pack system
   (`dark-gray`, `cozy-house`) with its own recolor/derive scripts under
@@ -53,13 +53,13 @@ packages - do that first/after, see below.
 
 ## KDE-adjacent packages without the KDE spin
 
-The source machine runs Fedora's KDE Plasma spin, and this setup leans on a
+My desktop runs Fedora's KDE Plasma spin, and this setup leans on a
 few pieces of that - SDDM (login), KWallet (`exec-once = ksecretd` in
 hyprland.conf), the `polkit-kde` auth-prompt agent, `plasma-integration`
 (what makes `QT_QPA_PLATFORMTHEME,kde` actually theme Qt apps), and the
 Akonadi/KOrganizer/Kontact PIM stack. None of that requires the actual
 Plasma shell (`plasma-workspace`/`plasma-desktop`) - each is independently
-installable, confirmed with `rpm -q --requires` against the source machine.
+installable, confirmed with `rpm -q --requires` against my desktop.
 They're called out as their own section in `packages.dnf.txt` for exactly
 that reason: installing straight onto Hyprland without the KDE spin still
 needs them, just explicitly instead of for free as part of a spin's default
@@ -83,7 +83,7 @@ default in `hypr/scripts/set-wallpaper.sh`) - currently 3 files, a few MB.
 `install.sh` restores them to `~/Pictures/Wallpapers/<Category>/...`,
 matching the paths configs expect.
 
-The full wallpaper library (~1.5G on the source machine) is **not** in this
+The full wallpaper library (~1.5G on my desktop) is **not** in this
 repo - that's personal media, not config, and doesn't belong in git. When
 you add a theme with a new wallpaper, run `scripts/collect-wallpapers.sh`
 to pull that file in automatically and commit the result.
