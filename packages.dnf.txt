@@ -48,6 +48,10 @@ swww
 #   kf6-kconfig  kwriteconfig6 in themes/apply.sh
 #   dolphin    $fileManager in hyprland.conf
 #   libadwaita  the ags config imports gi://Adw
+#   sass       ags compiles style.scss at startup via a `sass` binary. NOT a
+#              Fedora package: the source machine has dart-sass 1.102 dropped
+#              into /usr/local/bin/sass by hand. Get it from the dart-sass
+#              GitHub releases, or `sudo npm install -g sass`.
 libadwaita
 playerctl
 jq

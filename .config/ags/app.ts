@@ -5,7 +5,7 @@ import AppBar from "./widget/AppBar/AppBar"
 import StripBar from "./widget/AppBar/StripBar"
 import DesktopWidget from "./widget/DesktopWidget"
 import NotificationPopups from "./widget/Notifications/NotificationPopups"
-import { APP_BAR_LOCATION, PRIMARY_MONITOR } from "./config"
+import { APP_BAR_LOCATION, pickPrimaryConnector } from "./config"
 import followGtkTheme from "./theme"
 
 app.start({
@@ -13,9 +13,10 @@ app.start({
   main() {
     followGtkTheme()
 
+    const primaryConnector = pickPrimaryConnector(app.get_monitors())
     var primary = app
     .get_monitors()
-    .filter((m) => m.connector === PRIMARY_MONITOR)
+    .filter((m) => m.connector === primaryConnector)
     primary.map(Bar)
     primary.map(DesktopWidget)
     if (APP_BAR_LOCATION === "bottom") primary.map(AppBar)
@@ -23,7 +24,7 @@ app.start({
     if (APP_BAR_LOCATION === "top")
       app
         .get_monitors()
-        .filter((m) => m.connector !== PRIMARY_MONITOR)
+        .filter((m) => m.connector !== primaryConnector)
         .map(StripBar)
 
     // Constructing this is what claims org.freedesktop.Notifications on the

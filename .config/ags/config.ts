@@ -1,6 +1,21 @@
+import Gdk from "gi://Gdk?version=4.0"
+
 // GTK4/Wayland has no native "primary monitor" concept, so this is manual.
-// Match against Gdk.Monitor.connector (e.g. "DP-1", "HDMI-A-1").
-export const PRIMARY_MONITOR = "HDMI-A-1"
+// Preferred connectors in priority order, matched against
+// Gdk.Monitor.connector (e.g. "DP-1", "HDMI-A-1"). First one plugged in wins.
+export const PRIMARY_MONITORS = ["HDMI-A-1"]
+
+/** Primary connector: a preferred one if present, else the laptop panel, else the first monitor. */
+export function pickPrimaryConnector(monitors: Gdk.Monitor[]): string | null {
+  const present = monitors.map((m) => m.connector)
+  const preferred = PRIMARY_MONITORS.find((c) => present.includes(c))
+  if (preferred) return preferred
+
+  const internal = present.find((c) => c?.startsWith("eDP"))
+  if (internal) return internal
+
+  return present[0] ?? null
+}
 
 // Where the windows-per-workspace view lives:
 //   "top"    - a strip in the top bar, plus a floating one on each other monitor

@@ -84,6 +84,10 @@ gtk4
 # was just already present on the KDE spin)
 libadwaita
 
+# ags compiles .config/ags/style.scss at startup by shelling out to `sass`
+# ("sass: command not found in $PATH" otherwise). dart-sass provides it.
+dart-sass
+
 # ags itself is NOT built from source on Arch: aylurs-gtk-shell (AUR, see
 # packages.aur.txt) is 3.1.2 = commit bbee2f1, the exact pin in sources.lock.
 
