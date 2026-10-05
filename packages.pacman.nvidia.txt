@@ -1,0 +1,28 @@
+# Laptop GPU stack: Intel iGPU + RTX 2060 (Turing). Kept separate from
+# packages.pacman.txt so a non-Nvidia box never pulls it in.
+#
+#   grep -vE '^\s*(#|$)' packages.pacman.nvidia.txt | sudo pacman -S --needed -
+#
+# Turing is supported by the open kernel modules, so nvidia-open (no
+# proprietary-module DKMS drama). On the stock `linux` kernel use nvidia-open;
+# on linux-lts / zen / etc. swap it for nvidia-open-dkms and install the
+# matching linux-*-headers.
+nvidia-open
+nvidia-utils
+nvidia-settings
+egl-wayland
+
+# Hybrid graphics: `prime-run <app>` offloads an app to the dGPU
+nvidia-prime
+
+# Intel iGPU side (drives the internal panel on most hybrid laptops)
+mesa
+vulkan-intel
+intel-media-driver
+
+# Video decode on the Nvidia card (VA-API via NVDEC); needs
+# LIBVA_DRIVER_NAME=nvidia + NVD_BACKEND=direct in hypr/machine.conf if used
+libva-nvidia-driver
+
+# GPU monitoring, handy while the ags GPU widget is still AMD-only
+nvtop

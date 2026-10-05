@@ -42,6 +42,12 @@ packages - do that first/after, see below.
 
 - `packages.dnf.txt` - everything installable via `dnf` (run this first -
   `ags` and the picker won't build without their deps)
+- **Arch** (experimental, for the laptop): `packages.pacman.txt` (official
+  repos), `packages.aur.txt`, and `packages.pacman.nvidia.txt` (Intel +
+  Nvidia hybrid GPU stack). `build.sh` detects Arch and skips ags (AUR
+  `aylurs-gtk-shell` is the same commit) and the Hyprland fork (stock
+  `hyprland` is used). Not everything is ported yet - `swww` is `awww` on
+  Arch, and the GPU/temperature widgets are still AMD-only.
 - `sources.lock` + `build.sh` - `ags` and `hyprland-preview-share-picker`
   aren't packaged. `build.sh` clones each one, checks out the commit pinned
   in `sources.lock`, and builds/installs it, so a fresh machine gets the

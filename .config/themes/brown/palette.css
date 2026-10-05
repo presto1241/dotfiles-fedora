@@ -30,10 +30,11 @@
 @define-color fg_color                  #DBCFC8;
 @define-color text_color                #DBCFC8;
 
-/* Selection / accent. Kept a cool neutral so it reads as grey rather than
- * introducing a hue the rest of the theme does not have. */
-@define-color theme_selected_bg_color   #BA9470fa;
-@define-color theme_selected_fg_color   #BA9470fa;
+/* Selection / accent. Must be plain #RRGGBB - lib/palette.py silently skips
+ * anything else (an 8-digit #RRGGBBAA used to hide these two names from every
+ * consumer: rofi lost @selected, and the recolor maps skipped them). */
+@define-color theme_selected_bg_color   #BA9470;
+@define-color theme_selected_fg_color   #FFF2ED;
 @define-color selected_bg_color         #81756E;
 @define-color selected_fg_color         #FFF2ED;
 

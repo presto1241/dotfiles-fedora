@@ -1,0 +1,34 @@
+# AUR packages for the Arch setup. Install with whichever helper you use:
+#
+#   grep -vE '^\s*(#|$)' packages.aur.txt | yay -S --needed -
+#
+# Names were checked against the AUR RPC; re-check if something 404s, AUR
+# churns. Do the official-repo list (packages.pacman.txt) first.
+
+# The desktop shell. aylurs-gtk-shell 3.1.2 is commit bbee2f1, which is the
+# ags pin in sources.lock, so build.sh skips the ags source build on Arch.
+# It pulls in libastal-meta, which covers the Astal libs ags needs. The
+# explicit libastal-*-git lines below are the ones this config's imports use,
+# listed so they're not lost if libastal-meta changes. NOTE: those -git libs
+# track HEAD, not a pinned commit - if ags breaks after an update, that's the
+# first suspect.
+aylurs-gtk-shell
+libastal-meta
+libastal-io-git
+libastal-4-git
+libastal-hyprland-git
+libastal-tray-git
+libastal-notifd-git
+libastal-apps-git
+libastal-mpris-git
+
+# Screenshots - not in the Arch repos (Fedora gets it from lionheartp's COPR)
+grimblast-git
+
+# Cursor theme set in hyprland.conf (XCURSOR_THEME)
+mcmojave-cursors
+
+# GTK theme packs for .config/themes/*/theme.conf - Orchis is the only one I
+# confirmed exists on the AUR. Juno-ocean / Ant-Nebula etc: check per
+# packages.other.md.
+orchis-theme-git

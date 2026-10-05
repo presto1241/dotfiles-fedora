@@ -1,0 +1,121 @@
+# Arch equivalent of packages.dnf.txt - official repos only (AUR is in
+# packages.aur.txt, laptop GPU stuff in packages.pacman.nvidia.txt).
+#
+#   grep -vE '^\s*(#|$)' packages.pacman.txt | sudo pacman -S --needed -
+#
+# Names were checked against archlinux.org's package API. Arch has no -devel
+# split (headers ship in the main package), so every Fedora *-devel line from
+# the dnf list simply disappears.
+
+# Hyprland itself - stock extra/hyprland, NOT the Fedora tearing-fix fork.
+# build.sh skips the Hyprland fork build on Arch; test stock first, and only
+# bring the fork over if tearing is still broken. (hyprland-uwsm.desktop ships
+# inside the hyprland package; uwsm itself is separate.)
+hyprland
+hyprland-guiutils
+uwsm
+
+# Screen sharing / portals
+xdg-desktop-portal
+xdg-desktop-portal-hyprland
+xdg-desktop-portal-gtk
+
+# App launcher (rofi 2.x has Wayland support built in; no rofi-wayland
+# needed). The rofi config only imports its own files, so Fedora's
+# rofi-themes package isn't needed here.
+rofi
+
+# Terminal
+kitty
+
+# Wallpaper daemon. swww was renamed upstream to awww and is no longer in the
+# Arch repos. hypr/scripts/set-wallpaper.sh, hyprland.conf and the ags theme
+# code still call `swww` / `swww-daemon` - those need updating (or a shim)
+# before wallpapers work on Arch.
+awww
+
+# GTK/Qt theming
+kvantum
+kvantum-qt5
+qt6ct
+gtk4-layer-shell
+
+# Night light
+gammastep
+
+# Tools the hypr/ags/theme scripts shell out to (see the matching block in
+# packages.dnf.txt for which script uses what)
+playerctl
+jq
+socat
+grim
+slurp
+wl-clipboard
+lm_sensors
+xorg-xrandr
+python-pillow
+wireplumber
+brightnessctl
+rsync
+perl-image-exiftool
+kconfig
+dolphin
+
+# Screen lock / idle. Super+L is bound to hyprlock in keybinds.conf.
+hyprlock
+hypridle
+
+# hyprpm builds plugins (hyprbars) locally and shells out to these
+cmake
+meson
+ninja
+cpio
+pkgconf
+git
+gcc
+
+# Build deps for hyprland-preview-share-picker (cargo install, see build.sh).
+# rust and rustup conflict - pick one. If the build wants nightly, use rustup.
+base-devel
+rust
+gtk4
+
+# The ags config imports gi://Adw (never listed in the dnf file either - it
+# was just already present on the KDE spin)
+libadwaita
+
+# ags itself is NOT built from source on Arch: aylurs-gtk-shell (AUR, see
+# packages.aur.txt) is 3.1.2 = commit bbee2f1, the exact pin in sources.lock.
+
+# KDE-adjacent pieces (see README: these don't need the Plasma shell).
+# Package renames vs Fedora: kf6-kwallet -> kwallet, polkit-kde ->
+# polkit-kde-agent, breeze-icon-theme -> breeze-icons. ksecretd ships in
+# kwallet. There is no sddm-breeze on Arch; sddm's own theme works, or
+# theme it later. `breeze` is the Qt style + cursors.
+sddm
+kwallet
+kwalletmanager
+polkit-kde-agent
+plasma-integration
+breeze-icons
+breeze
+
+# Akonadi/PIM stack (korganizer/kontact). Fedora's -server/-libs split
+# packages are folded into the main ones on Arch.
+# mariadb needs one-time init BEFORE first start on Arch (Fedora does it for
+# you):
+#   sudo mariadb-install-db --user=mysql --basedir=/usr --datadir=/var/lib/mysql
+akonadi
+akonadi-mime
+akonadi-contacts
+akonadi-search
+akonadi-calendar
+akonadi-import-wizard
+mailimporter
+kontactinterface
+korganizer
+kontact
+mariadb
+
+# Font (Fedora needs a manual download for this one)
+ttf-cascadia-code-nerd

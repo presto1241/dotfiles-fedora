@@ -2,7 +2,15 @@
 # sudo dnf copr enable lionheartp/Hyprland (needed for `hyprland` below - build.sh
 #                                            then patches and versionlocks it, see
 #                                            sources.lock/packages.other.md)
+# Terra repo (swww below comes from it, not core Fedora). The source machine
+# has /etc/yum.repos.d/terra.repo with baseurl
+# https://repos.fyralabs.com/terra$releasever - see terra.fyralabs.com for
+# the official install command.
 # sudo dnf install $(grep -v '^#' packages.dnf.txt)
+#
+# Known oddity: libastal-hyprland was installed from a local .rpm on the
+# source machine (@commandline), not the astalRPM COPR - check the COPR
+# build is current before assuming the line below works on a fresh box.
 
 # Hyprland itself - from the lionheartp/Hyprland COPR above, NOT stock Fedora
 # repos. build.sh installs a source-patched build over this afterward; this
@@ -26,6 +34,42 @@ kitty
 
 # Wallpaper daemon (see .config/hypr/scripts/set-wallpaper.sh)
 swww
+
+# Tools the hypr/ags/theme scripts shell out to. These were never listed
+# before - they just happened to already be on the KDE-spin machine.
+#   playerctl  media-key.sh        jq       nearly every hypr/scripts/*.sh
+#   socat      auto-raise.sh, rofi-toggle.sh (Hyprland event socket)
+#   grimblast  screenshot.sh (lionheartp COPR; wraps grim + slurp)
+#   wl-clipboard  grimblast's copysave
+#   lm_sensors temps.sh            xrandr   xwayland-primary.sh
+#   python3-pillow  themes/lib/recolor.py
+#   wireplumber  wpctl volume binds   brightnessctl  XF86MonBrightness binds
+#   rsync      install.sh / sync.sh   exiftool  scripts/collect-wallpapers.sh
+#   kf6-kconfig  kwriteconfig6 in themes/apply.sh
+#   dolphin    $fileManager in hyprland.conf
+#   libadwaita  the ags config imports gi://Adw
+libadwaita
+playerctl
+jq
+socat
+grimblast
+grim
+slurp
+wl-clipboard
+lm_sensors
+xrandr
+python3-pillow
+wireplumber
+brightnessctl
+rsync
+perl-Image-ExifTool
+kf6-kconfig
+dolphin
+
+# Screen lock - Super+L is bound to hyprlock in keybinds.conf, but it was NOT
+# installed on the source machine, so that bind has never worked. Uncomment
+# to fix it.
+# hyprlock
 
 # GTK/Qt theming
 kvantum

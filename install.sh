@@ -49,11 +49,25 @@ fi
 # large media.
 rsync -a "$SRC/wallpapers/" "$HOME/Pictures/Wallpapers/"
 
+# swww was renamed upstream to awww (it's what Arch ships), but the configs and
+# scripts still call `swww` / `swww-daemon`. Where only awww is installed,
+# shim the old names. /usr/local/bin rather than ~/.local/bin so it's on PATH
+# for the Hyprland session too, which doesn't always inherit the user's PATH.
+if command -v awww >/dev/null && ! command -v swww >/dev/null; then
+    echo
+    echo "awww found but no swww - linking the old names (needs sudo):"
+    sudo ln -sf "$(command -v awww)" /usr/local/bin/swww
+    sudo ln -sf "$(command -v awww-daemon)" /usr/local/bin/swww-daemon
+    echo "linked /usr/local/bin/swww -> awww, swww-daemon -> awww-daemon"
+fi
+
 cat <<'EOF'
 
 Linked. Still needed before this is fully usable:
 
-  1. dnf install $(grep -v '^#' packages.dnf.txt)
+  1. Install packages: Fedora: dnf install $(grep -v '^#' packages.dnf.txt)
+     Arch: packages.pacman.txt, packages.aur.txt, packages.pacman.nvidia.txt
+     (commands are at the top of each file)
   2. Everything in packages.other.md:
        - build/install ags (Go) + `npm install` in ~/.config/ags
        - build/install hyprland-preview-share-picker (Rust)

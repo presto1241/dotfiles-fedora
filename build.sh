@@ -1,9 +1,11 @@
 #!/usr/bin/env bash
 # Builds and installs the tools in sources.lock, pinned to the commit
-# recorded there. Run after install.sh and after installing packages.dnf.txt
-# (the astal COPR + build deps in particular - ags will not build without
-# them). See packages.other.md for what each tool is and why it isn't just
-# a dnf package.
+# recorded there. Run after install.sh and after installing the package list
+# for your distro (packages.dnf.txt on Fedora; packages.pacman.txt +
+# packages.aur.txt on Arch). On Fedora the astal COPR + build deps in
+# particular have to be there first - ags will not build without them. See
+# packages.other.md for what each tool is and why it isn't just a package.
+# On Arch, ags and the Hyprland fork are skipped (see skip_reason below).
 set -euo pipefail
 
 SRC="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -11,6 +13,28 @@ BUILD_DIR="$SRC/.build"
 LOCK="$SRC/sources.lock"
 
 mkdir -p "$BUILD_DIR"
+
+# fedora (default) or arch. Arch derivatives (ID_LIKE=arch) count as arch.
+DISTRO=fedora
+if [ -r /etc/os-release ]; then
+    . /etc/os-release
+    [[ "${ID:-}" == arch || "${ID_LIKE:-}" == *arch* ]] && DISTRO=arch
+fi
+
+# Set once the Hyprland fork has been built from source this run, so the
+# plugin step knows whether to point hyprpm at it or at stock headers.
+HL_FORK_BUILT=0
+
+# On Arch, some lock entries are covered by a package instead - prints the
+# reason and returns 0 if $1 should be skipped on this distro.
+skip_reason() {
+    [ "$DISTRO" = arch ] || return 1
+    case "$1" in
+        ags) echo "packaged: aylurs-gtk-shell (AUR) is the same commit as the pin" ;;
+        Hyprland) echo "using stock extra/hyprland; fork only if tearing is still broken" ;;
+        *) return 1 ;;
+    esac
+}
 
 build_ags() {
     local dir="$1"
@@ -36,6 +60,7 @@ build_hyprland() {
     sudo cmake --install "$dir/build"
     echo "  versionlocking so a routine dnf update can't silently revert this:"
     sudo dnf versionlock add hyprland
+    HL_FORK_BUILT=1
 }
 
 build_hyprbars() {
@@ -46,7 +71,15 @@ build_hyprbars() {
     # public upstream commits - ours is fork-only, so both steps below have
     # to point at local paths instead of letting it guess. Needs sudo
     # (hyprpm shells out to it itself for every state write).
-    hyprpm update --hl-url "$BUILD_DIR/Hyprland" --no-shallow
+    # With stock Hyprland (Arch) there's no local fork to point at, so
+    # hyprpm pulls headers matching the installed version. The plugin fork
+    # commit was written against 0.56.1 though - if it won't compile against
+    # newer stock headers, it needs rebasing onto upstream hyprland-plugins.
+    if [ "$HL_FORK_BUILT" = 1 ]; then
+        hyprpm update --hl-url "$BUILD_DIR/Hyprland" --no-shallow
+    else
+        hyprpm update
+    fi
     hyprpm remove hyprland-plugins 2>/dev/null || true
     hyprpm add "$dir" "$commit"
     hyprpm enable hyprbars
@@ -54,6 +87,11 @@ build_hyprbars() {
 
 while read -r name repo commit; do
     [[ -z "$name" || "$name" == \#* ]] && continue
+
+    if reason="$(skip_reason "$name")"; then
+        echo "== $name: skipped on $DISTRO ($reason) =="
+        continue
+    fi
 
     dir="$BUILD_DIR/$name"
     echo "== $name @ ${commit:0:12} =="
