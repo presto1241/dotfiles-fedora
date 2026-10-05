@@ -1,19 +1,30 @@
 # AUR packages for the Arch setup. Install with whichever helper you use:
 #
-#   grep -vE '^\s*(#|$)' packages.aur.txt | yay -S --needed -
+#   yay -S --needed $(grep -vE '^\s*(#|$)' packages.aur.txt)
+#
+# Pass the names as arguments (as above), NOT piped into `yay -S -`: piping
+# uses up stdin, so yay can't ask its prompts (provider choice, PKGBUILD
+# review) and the install falls over.
 #
 # Names were checked against the AUR RPC; re-check if something 404s, AUR
 # churns. Do the official-repo list (packages.pacman.txt) first.
 
 # The desktop shell. aylurs-gtk-shell 3.1.2 is commit bbee2f1, which is the
 # ags pin in sources.lock, so build.sh skips the ags source build on Arch.
-# It pulls in libastal-meta, which covers the Astal libs ags needs. The
-# explicit libastal-*-git lines below are the ones this config's imports use,
-# listed so they're not lost if libastal-meta changes. NOTE: those -git libs
-# track HEAD, not a pinned commit - if ags breaks after an update, that's the
-# first suspect.
+# It depends on `libastal` (= libastal-git below) and libastal-4.
+#
+# Deliberately NOT libastal-meta: it depends on ~21 libs by names that are
+# not AUR packages (libastal-greet, -power-profiles, -wl, ...), so it fails
+# to resolve. Only the libs this config actually imports are listed. NOTE:
+# these -git libs track HEAD, not a pinned commit - if ags breaks after an
+# update, that's the first suspect.
+# AUR-only dependencies of the notifd/mpris and tray libs, listed explicitly
+# so the resolver never has to find them by "provides":
+quarrel-git
+appmenu-glib-translator-git
+
 aylurs-gtk-shell
-libastal-meta
+libastal-git
 libastal-io-git
 libastal-4-git
 libastal-hyprland-git
