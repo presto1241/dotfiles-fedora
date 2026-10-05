@@ -50,6 +50,23 @@ window.Bar {
     background-color: $bg-color;
   }
 
+  // Pills that share a row get a tighter radius on the sides that face a
+  // neighbour. :only-child matches both first and last, so a lone pill
+  // keeps the full radius.
+  .widget-row > .widget-group {
+    border-radius: $widget-inner-radius;
+
+    &:first-child {
+      border-top-left-radius: $widget-border-radius;
+      border-bottom-left-radius: $widget-border-radius;
+    }
+
+    &:last-child {
+      border-top-right-radius: $widget-border-radius;
+      border-bottom-right-radius: $widget-border-radius;
+    }
+  }
+
   .system-tray {
     transform: rotate(-180deg);
     transition: transform 0.25s;
@@ -84,6 +101,12 @@ window.Bar {
   .weather {
     padding-left: 4px;
     padding-right: 4px;
+    margin: 2px;
+
+    // The generic label padding would leave the right edge 4px heavier than the left.
+    label {
+      padding-right: 0;
+    }
   }
 
   .media-control {
@@ -162,5 +185,28 @@ window.Bar {
     > arrow {
       background-color: $bg-color;
     }
+  }
+}
+
+// Non-primary monitors' floating workspace strip. It borrows window.Bar's
+// child rules (buttons, labels, .widget-group) by carrying that class too, so
+// the window-level sizing has to be undone here or the collapsed hot-zone
+// would still be 22px + margins tall.
+window.StripBar {
+  min-height: 0;
+  margin: 0;
+  background: transparent;
+
+  .workspace-strip {
+    margin: 2px 8px 4px 8px;
+  }
+
+  // A collapsed GtkRevealer reports zero size, so on its own the window would
+  // shrink to nothing and there'd be nothing left to hover. The hot-zone keeps
+  // the surface alive at a fixed size; the strip (centred) opens out of it.
+  .strip-hotzone {
+    min-width: 240px;
+    min-height: 3px;
+    background-color: rgba(0, 0, 0, 0.01);
   }
 }

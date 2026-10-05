@@ -18,6 +18,7 @@ $active-color: #{"@theme_selected_bg_color"};
 $border-color: #{"@borders"};
 $border-width: 1px;
 $widget-border-radius: 25px;
+$widget-inner-radius: calc($widget-border-radius * 0.5);
 $monitor-margin: 2px;
 $monitor-border-radius: calc($widget-border-radius - $monitor-margin);
 

@@ -1,6 +1,9 @@
 @use "variables" as *;
 
-.monitor-group {
+// .workspace-strip (the top bar's copy of this view) shares every icon/badge
+// rule below; its own layout overrides live in the block after this one.
+.monitor-group,
+.workspace-strip {
   margin: $monitor-margin;
   border: $border-color $border-width solid;
   border-radius: $monitor-border-radius;
@@ -134,6 +137,82 @@
     margin-right: 4px;
     border-radius: 4px;
     background-color: $border-color;
+  }
+}
+
+// The strip sits inside the top bar, where .widget-group already supplies the
+// pill's background, border and radius - so this only drops the dock's inset
+// margins and adds the numbered-workspace pieces the dock doesn't have.
+.workspace-strip {
+  margin: 0;
+  padding: 0 4px 0 2px;
+
+  // The theme reserves a 16px min-width per button, which would pad out every
+  // little icon - same fix as .media-control in _bar.scss.
+  button {
+    min-width: 0;
+    min-height: 0;
+  }
+
+  .workspace-number {
+    margin: 2px 1px;
+    padding: 0;
+    border-radius: 25%;
+  }
+
+  .workspace-number label {
+    padding: 1px 2px 0 2px;
+    font-weight: bold;
+  }
+
+  // A ring rather than a filled pill: some palettes (brown) set
+  // theme_selected_bg and _fg to the same colour, which hides the number.
+  .workspace-number.active {
+    background-color: $active-color;
+  }
+
+  .workspace-number.active label {
+    color: rgb(32, 32, 32);
+  }
+
+  // Expand arrow for the minimized/active app icons - same two rules as
+  // .system-tray in _bar.scss, verbatim, so it rotates identically. No
+  // extra margin/sizing here on purpose: those were what made it look
+  // different from the tray's arrow in the first place.
+  .tasks-toggle {
+    transform: rotate(0deg);
+    transition: transform 0.25s;
+  }
+
+  .tasks-toggle.open {
+    transform: rotate(180deg);
+  }
+
+  // Plain buttons above (button:hover image / button.active image) are
+  // meant for the dock's app icons - this one's just a rotating chevron
+  // like .system-tray, so it opts back out of both the hover glow and any
+  // native focus ring.
+  .tasks-toggle,
+  .tasks-toggle:hover,
+  .tasks-toggle:focus {
+    outline: none;
+  }
+
+  .tasks-toggle:hover image,
+  .tasks-toggle.open image {
+    filter: none;
+  }
+
+  // The tray's own trailing padding is for the dock's rounded pill end; here
+  // the active-apps section can follow it.
+  .minimized-tray {
+    padding-right: 0;
+  }
+
+  // The bar's generic label rule pads every label 4px a side, which would
+  // balloon the notification badge.
+  .notification-badge label {
+    padding: 0;
   }
 }
 

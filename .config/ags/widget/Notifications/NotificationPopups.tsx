@@ -3,6 +3,7 @@ import { Astal, Gtk, Gdk } from "ags/gtk4"
 import { createState, onCleanup, For } from "ags"
 import { timeout, type Timer } from "ags/time"
 import Notifd from "gi://AstalNotifd?version=0.1"
+import Hyprland from "gi://AstalHyprland?version=0.1"
 import Notification from "./Notification"
 
 // How long a popup stays up when the sender didn't ask for anything specific.
@@ -18,6 +19,16 @@ export default function NotificationPopups(gdkmonitor: Gdk.Monitor) {
   // system blocks until DBus gives up trying to activate KDE's
   // plasma_waitforname stub, which never resolves outside a Plasma session.
   const notifd = Notifd.get_default()
+
+  const hypr = Hyprland.get_default()
+  const connector = gdkmonitor.connector ?? ""
+
+  // A mapped toast surface makes Hyprland drop direct scanout and tearing on
+  // this monitor, which shows as a speckle/dropped frame on a fullscreen game.
+  function fullscreenOnMonitor(): boolean {
+    const monitor = hypr.monitors.find((m) => m.name === connector)
+    return monitor?.activeWorkspace?.hasFullscreen ?? false
+  }
 
   // Popups are deliberately NOT notifd.notifications. That property is the
   // list of everything unresolved, which persists until a client acks it -
@@ -59,6 +70,8 @@ export default function NotificationPopups(gdkmonitor: Gdk.Monitor) {
 
   const onNotified = notifd.connect("notified", (_, id) => {
     if (notifd.dontDisturb) return
+    // Skipped, not resolved: it stays in notifd.notifications, just no toast.
+    if (fullscreenOnMonitor()) return
     const n = notifd.get_notification(id)
     if (n) push(n)
   })

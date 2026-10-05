@@ -35,11 +35,20 @@ done
 # Machine-local monitor layout - lives inside the repo checkout (since
 # .config/hypr is symlinked wholesale above) but is gitignored.
 if [ ! -e "$SRC/.config/hypr/monitors.conf" ]; then
-    cp "$SRC/.config/hypr/monitors.conf.example" "$SRC/.config/hypr/monitors.conf"
-    echo
-    echo "Created .config/hypr/monitors.conf from the template."
-    echo "Edit it for THIS machine's outputs before starting Hyprland - run"
-    echo "'hyprctl monitors all' once you're in a session to see real names/modes."
+    if [ -e "$SRC/.config/hypr/monitors.conf.example" ]; then
+        cp "$SRC/.config/hypr/monitors.conf.example" "$SRC/.config/hypr/monitors.conf"
+        echo
+        echo "Created .config/hypr/monitors.conf from the template."
+        echo "Edit it for THIS machine's outputs before starting Hyprland - run"
+        echo "'hyprctl monitors all' once you're in a session to see real names/modes."
+    else
+        # The template was dropped from the repo in an old sync, so this used
+        # to abort the whole script (set -e) before wallpapers/shims ran.
+        echo
+        echo "No monitors.conf.example in the repo - skipping monitors.conf."
+        echo "hyprland.conf has its own monitor lines; check them against"
+        echo "'hyprctl monitors all' for this machine."
+    fi
 fi
 
 # Wallpapers referenced by theme.conf / set-wallpaper.sh - only the specific

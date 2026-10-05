@@ -2,9 +2,10 @@ import app from "ags/gtk4/app"
 import style from "./style.scss"
 import Bar from "./widget/TopBar/Bar"
 import AppBar from "./widget/AppBar/AppBar"
+import StripBar from "./widget/AppBar/StripBar"
 import DesktopWidget from "./widget/DesktopWidget"
 import NotificationPopups from "./widget/Notifications/NotificationPopups"
-import { PRIMARY_MONITOR } from "./config"
+import { APP_BAR_LOCATION, PRIMARY_MONITOR } from "./config"
 import followGtkTheme from "./theme"
 
 app.start({
@@ -17,7 +18,13 @@ app.start({
     .filter((m) => m.connector === PRIMARY_MONITOR)
     primary.map(Bar)
     primary.map(DesktopWidget)
-    primary.map(AppBar)
+    if (APP_BAR_LOCATION === "bottom") primary.map(AppBar)
+
+    if (APP_BAR_LOCATION === "top")
+      app
+        .get_monitors()
+        .filter((m) => m.connector !== PRIMARY_MONITOR)
+        .map(StripBar)
 
     // Constructing this is what claims org.freedesktop.Notifications on the
     // session bus. Nothing else on the system owns it - Fedora only ships
